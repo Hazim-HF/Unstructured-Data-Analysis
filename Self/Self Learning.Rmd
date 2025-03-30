@@ -1,0 +1,41 @@
+---
+title: "Unstructured Data Analytics"
+output: 
+  pdf_document:
+    toc: true
+    toc_depth: 6
+geometry: margin=0.5cm
+date: "2025-03-15"
+---
+
+# Introduction to data structure
+
+# Unstructured text mining
+
+# Text data analysis
+
+# Text cluster analysis
+
+# Sentiment analysis
+
+# Audio data analysis
+
+```{r}
+# import library
+library(tuneR)
+library(seewave)
+
+# sampling rate 
+sr = 8000
+# time in sec if sample for 2 sec at 8KHz
+t = seq(0,2,1/sr)
+# sine wave a 440Hz scaled to fill out 16 bit range
+y = (2^15-1)*sin(2*pi*440*t)
+
+# plot
+plot(y, type = 'l') # cannot see wave
+plot(y[1:500], type = 'l')
+
+# convert to sound
+w = wave(y, samp.rate = sr, bit = 16)
+```
