@@ -1,0 +1,60 @@
+---
+title: "Unstructured Data Analytics"
+author: "Hazim Fitri"
+date: "`r Sys.Date()`"
+output: pdf_document
+always_allow_html: true
+---
+
+# Wordcloud
+
+```{r}
+ww = c("statistics", "estate", "castrate", "catalyst", "Statistics")
+print(grep(pattern="stat", x=ww)) # return index that contains "stat"
+grep(pattern="stat", x=ww, ignore.case=T) # ignore case when searching for "stat"
+grep(pattern="stat", x=ww, ignore.case=T, value=T) # return word instead of index
+print('--------------------')
+print(grepl(pattern="stat", x=ww)) # return boolen
+print('--------------------')
+print(regexpr(pattern="stat", ww))
+gregexpr(pattern="stat",ww)
+regexec(pattern="(st)(at)",ww)
+```
+
+```{r}
+sub("stat", "STAT", ww, ignore.case=T)
+```
+
+```{r}
+library(stringr)
+# dataset words, fruit, sentences
+words
+fruit
+sentences
+```
+
+```{r}
+sum(str_length(sentences))
+str_split(sentences[1], " ")
+str_c("one for all","All for one",sep=",") #combine these string and separate by comma
+str_c("one for all","All for one",collapse=",") #combine the string to be one sentences
+```
+
+```{r wordcloud}
+library(tm)
+docs = Corpus(VectorSource(sentences))
+
+docs = tm_map(docs, removePunctuation)
+docs = tm_map(docs, content_transformer(tolower))
+docs = tm_map(docs, removeNumbers)
+docs = tm_map(docs, removeWords, stopwords("english"))
+docs = tm_map(docs, stripWhitespace)
+docs = tm_map(docs, stemDocument) # stemming doc (e.g., eating -> eat)
+dtm = TermDocumentMatrix(docs) # Term Document matrix
+m = as.matrix(dtm)
+v = sort(rowSums(m), decreasing=T)
+df = data.frame(word=names(v), freq=v)
+
+library(wordcloud2)
+wordcloud2(df)
+```
