@@ -143,4 +143,5 @@ gccsv = readLines('02. Text Data Mining/Attachment 1/GC.csv')
 rise = readLines('02. Text Data Mining/Attachment 1/Rise.csv')
 
 
+
 ```
