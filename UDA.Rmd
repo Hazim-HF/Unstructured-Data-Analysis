@@ -6,23 +6,76 @@ output: pdf_document
 always_allow_html: true
 ---
 
-# Wordcloud
+## Read data
 
 ```{r}
-ww = c("statistics", "estate", "castrate", "catalyst", "Statistics")
+library(tm)
+eg3 = c('Hi!', 'Welcome to STQD6114', )
+```
+
+# Text Exploration
+
+```{r}
+ww = c("statistics", "estate", "castrate", "catalyst", "Statistics", 'hazim fitri')
 print(grep(pattern="stat", x=ww)) # return index that contains "stat"
 grep(pattern="stat", x=ww, ignore.case=T) # ignore case when searching for "stat"
 grep(pattern="stat", x=ww, ignore.case=T, value=T) # return word instead of index
+
 print('--------------------')
+
 print(grepl(pattern="stat", x=ww)) # return boolen
+
 print('--------------------')
+
 print(regexpr(pattern="stat", ww))
 gregexpr(pattern="stat",ww)
 regexec(pattern="(st)(at)",ww)
+
+print('--------------------')
+
+sub('stat', 'STAT', ww, ignore.case=T) # convert first match only
+gsub('stat', 'jai', ww, ignore.case=T)
+
+print('--------------------')
+
+library(stringr)
+str_length(ww)
+str_split(ww, " ") # split a sentences by space and return a list
+str_c('a', 'b', 'c') # combine multiple string
+str_c('a', 'b', 'c', sep=',') # combine multiple string using seperator
+str_c('a,b', 'b,c', 'c,d', collapse=',') # 
+str_sub(c(1,2,3), 1, 2) # return the 1 ~ 2 character
+str_to_upper(ww)
+str_to_lower(ww)
+str_to_title(ww)
+
+str_view(fruit, '.a.') # return all 
+
+str_detect
+
+str_replace
+
+print('--------------------')
+
+ex<-"aabbbccddddeeeee"
+str_view(ex, 'aac?')
+
+str_detect
+str_detect(fruit, "[aeiou]$") # a e i o u at the end
+str_count(fruit, 'e') # count how many 'e' in each word
+str_replace(fruit, '^a', 'A') # find word stat with 'a' and replace with 'A'
+str_replace_all(fruit, c('^a'='A', '^e'='E'))
 ```
 
+# Wordcloud
+
 ```{r}
-sub("stat", "STAT", ww, ignore.case=T)
+library(tm)
+docs<-Corpus(VectorSource(sentences))
+
+writeLines(as.character(docs[[30]]))
+
+getTransformations()
 ```
 
 ```{r}
@@ -34,15 +87,21 @@ sentences
 ```
 
 ```{r}
-sum(str_length(sentences))
-str_split(sentences[1], " ")
-str_c("one for all","All for one",sep=",") #combine these string and separate by comma
-str_c("one for all","All for one",collapse=",") #combine the string to be one sentences
+h = 'hello-world'
+h = Corpus(VectorSource(h))
+toSpace<-content_transformer(function(x,pattern){return(gsub(pattern," ",x))})
+inspect(tm_map(h,toSpace,"-"))
+
 ```
 
 ```{r wordcloud}
 library(tm)
 docs = Corpus(VectorSource(sentences))
+
+toSpace = content_transformer(function(x, pattern)
+  {return(gsub(pattern, " ", x))})
+
+docs = tm_map(docs, toSpace, '-')
 
 docs = tm_map(docs, removePunctuation)
 docs = tm_map(docs, content_transformer(tolower))
@@ -57,4 +116,31 @@ df = data.frame(word=names(v), freq=v)
 
 library(wordcloud2)
 wordcloud2(df)
+```
+
+# Plot
+
+```{r}
+library(ggplot2)
+subs = subset(df, freq > 10)
+ggplot(subs, aes(x=word, y=freq)) +
+  geom_bar(stat='identity') +
+  theme(axis.text.x=element_text(angle=45, hjust=1))
+```
+
+## Exercise
+
+```{r}
+# a warning will appear if the text does not have a final newline
+doc1 = readLines('02. Text Data Mining/movies/Doc1.txt')
+doc2 = readLines('02. Text Data Mining/movies/Doc2.txt')
+doc3 = readLines('02. Text Data Mining/movies/Doc3.txt')
+doc4 = readLines('02. Text Data Mining/movies/Doc4.txt')
+doc5 = readLines('02. Text Data Mining/movies/Doc5.txt')
+doc6 = readLines('02. Text Data Mining/Attachment 1/Doc6.csv')
+gc = readLines('02. Text Data Mining/Attachment 1/GC.txt')
+gccsv = readLines('02. Text Data Mining/Attachment 1/GC.csv')
+rise = readLines('02. Text Data Mining/Attachment 1/Rise.csv')
+
+
 ```
