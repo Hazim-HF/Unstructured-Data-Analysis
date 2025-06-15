@@ -1,0 +1,25 @@
+MyCert: Malaysia data breaches up 29% in Q1 2025
+
+By Angelin Yeoh
+
+PETALING JAYA: The Malaysia Computer Emergency Response Team (MyCert) reported an increase in data breach incidents in Malaysia in the first quarter of the year.
+
+"Data breach incidents are growing in Malaysia with a nearly 29% increase this quarter, underscoring the need for better security measures to ensure national security and public trust," said MyCert.
+
+According to its latest Cyber Incident Quarterly Summary report released on June 10, MyCert received 195 incidents reports on data breach incidents in Q1 2025, compared to 151 in Q4 2024.
+
+No specific details were provided. It shared that "high-profile breaches" often involve massive datasets with personal identifier information (PII) such as full name, IC number, financial details and addresses being compromised. 
+
+MyCert, which operates under Cybersecurity Malaysia, said it is also observing a trend of perpetrators stealing and holding sensitive data hostage until the affected organisation pays a ransom.
+
+However, it said reports on ransomware incidents have decreased to 25% in Q1 2025, with 12 incidents compared to 16 in the last quarter.
+
+It also shared that businesses are the "most impacted by ransomware incidents" in Malaysia with Active Directory servers being primary targets.
+
+Fraud incidents continue to target both end users and organisations. MyCert said it has become the preferred method of criminals due to lack of awareness among the public.
+
+It reported handling a total of 1,126 fraud cases this quarter, a 2% increase from last quarter. 
+
+The top fraud incident is phishing with 719 cases, representing 68% of all cases. 
+
+Overall, MyCert recorded 1,657 incidents in Q1 2025 in a number of categories including denial of service, malicious code and intrusion attempts; marking a 7% increase from 1,550 cases in the previous quarter.

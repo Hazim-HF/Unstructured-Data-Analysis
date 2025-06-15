@@ -1,0 +1,32 @@
+Getty argues its landmark UK copyright case does not threaten AI
+
+LONDON (June 9): Getty Images' landmark copyright lawsuit against artificial intelligence company Stability AI began at London's High Court on Monday, with Getty rejecting Stability AI's contention the case posed a threat to the generative AI industry.
+
+Seattle-based Getty, which produces editorial content and creative stock images and video, accuses Stability AI of using its images to "train" its Stable Diffusion system, which can generate images from text inputs.
+
+Getty, which is bringing a parallel lawsuit against Stability AI in the US, says Stability AI unlawfully scraped millions of images from its websites and used them to train and develop Stable Diffusion.
+
+Stability AI — which has raised hundreds of millions of dollars in funding and in March announced investment by the world's largest advertising company, WPP — is fighting the case and denies infringing any of Getty's rights.
+
+Before the trial began on Monday, Stability AI's spokesperson said "the wider dispute is about technological innovation and freedom of ideas".
+
+"Artists using our tools are producing works built upon collective human knowledge, which is at the core of fair use and freedom of expression," the spokesperson said.
+
+In court filings, Stability AI lawyer Hugo Cuddigan said Getty's lawsuit posed "an overt threat to Stability's whole business and the wider generative AI industry".
+
+Getty's lawyers said that argument was incorrect and their case was about upholding intellectual property rights.
+
+"It is not a battle between creatives and technology, where a win for Getty Images means the end of AI," Getty's lawyer Lindsay Lane told the court.
+
+She added: "The two industries can exist in synergistic harmony because copyright works and database rights are critical to the advancement and success of AI...the problem is when AI companies such as Stability want to use those works without payment."
+
+Wider impact
+Getty's case is one of several lawsuits brought in Britain, the US and elsewhere over the use of copyright-protected material to train AI models, after ChatGPT and other AI tools became widely available more than two years ago.
+
+Creative industries are grappling with the legal and ethical implications of AI models that can produce their own work after being trained on existing material. Prominent figures including Elton John have called for greater protections for artists.
+
+Lawyers say Getty's case will have a major impact on the law, as well as potentially informing government policy on copyright protections relating to AI.
+
+"Legally, we are in uncharted territory. This case will be pivotal in setting the boundaries of the monopoly granted by UK copyright in the age of AI," Rebecca Newman, a lawyer at Addleshaw Goddard, who is not involved in the case, said.
+
+Cerys Wyn Davies, from the law firm Pinsent Masons, said the High Court's ruling "could have a major bearing on market practice and the UK's attractiveness as a jurisdiction for AI development".

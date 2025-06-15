@@ -13,6 +13,23 @@ library(tm)
 eg3 = c('Hi!', 'Welcome to STQD6114', )
 ```
 
+# Text Data Mining
+
+## Web Scrapping
+
+```{r}
+library(httr)
+library(rvest)
+library(dplyr)
+library(XML)
+```
+
+```{r}
+url = "https://www.amazon.com/s?k=laptop&language=en_US&crid=15XP9X39QRUQ6&currency=MYR&sprefix=lap%252Caps%252C468&ref=nb_sb_noss_2"
+
+html_nodes(url, .a-price-whole)
+```
+
 # Text Exploration
 
 ```{r}
@@ -144,4 +161,400 @@ rise = readLines('02. Text Data Mining/Attachment 1/Rise.csv')
 
 
 
+```
+
+::: {style="font-family: 'Times New Roman'; font-size: 12pt; line-height: 1.5; font-weight: bold;"}
+Hello World
+:::
+
+```{r}
+eg6 = readLines("https://en.wikipedia.org/wiki/Data_science")
+eg6[grep("\\h2",eg6)]
+eg6[grep("\\p",eg6)] #paragraph
+
+
+```
+
+```{r}
+library(XML)
+doc = htmlParse(eg6)
+doc.text = unlist(xpathApply(doc, '//p', xmlValue))
+unlist(xpathApply(doc, '//h2', xmlValue))
+```
+
+```{r lect_example}
+pages = paste0('https://www.amazon.co.jp/s?k=skincare&crid=28HIW1TYLV9UM&sprefix=skincare%2Caps%2C268&ref=nb_sb_noss_1&page=', 0:9)
+eg10 = read_html (pages[1])
+nodes = html_nodes (eg10,'.a-price-whole')
+texts = html_text (nodes)
+
+price = function(page){
+  url = read_html(page)
+  nodes = html_nodes(url, '.a-price-whole')
+  html_text(nodes)
+}
+
+sapply(pages, price)
+do.call("c", lapply(pages, price))
+```
+
+```{r project}
+url = "https://www.lazada.com.my/shop-home-office-desks/?clickTrackInfo=matchType--20___description--57%2525%2Boff___seedItemMatchType--c2i___bucket--0___spm_id--category.hp___seedItemScore--0.0___abId--333258___score--0.095538795___pvid--ebb1cf54-2ab7-4654-827e-3ec1e410554b___refer--___appId--7253___seedItemId--4134886924___scm--1007.17253.333258.0___categoryId--10000768___timestamp--1748786136974&from=hp_categories&item_id=4134886924&page=4&params=%7B%22catIdLv1%22%3A%2210000340%22%2C%22pvid%22%3A%22ebb1cf54-2ab7-4654-827e-3ec1e410554b%22%2C%22src%22%3A%22ald%22%2C%22categoryName%22%3A%22Meja%2BRuang%2BKerja%22%2C%22categoryId%22%3A%2210000768%22%7D&q=meja%20ruang%20kerja&service=hp_categories&spm=a2o4k.homepage.categoriesPC.d_13_10000768&src=hp_categories&up_id=4134886924&version=v2"
+
+page = read_html(url)
+
+html_element(page, '.ooOxS') %>% html_text()
+
+```
+
+```{r F1_example}
+
+library(rvest)
+
+url = "https://en.wikipedia.org/wiki/List_of_Formula_One_drivers"
+
+page = read_html(url)
+
+html_element(page, "table.sortable")
+```
+
+```{r}
+library(RSelenium)
+library(rvest)
+
+# Start Selenium server
+rD <- rsDriver(browser = "chrome", port = 4445L, chromever = "latest")
+remDr <- rD[["client"]]
+
+# Navigate to page
+remDr$navigate(url)
+
+# Wait for page to load (important!)
+Sys.sleep(5)
+
+# Get page source and parse
+page_source <- remDr$getPageSource()[[1]]
+page <- read_html(page_source)
+
+# Extract prices using more stable selectors
+prices <- page %>%
+  html_elements('[data-qa-locator="product-price"]') %>%
+  html_text()
+
+# Clean up
+prices_clean <- gsub("RM|\\s", "", prices) %>% as.numeric()
+
+# Close session
+remDr$close()
+rD[["server"]]$stop()
+
+print(prices_clean)
+```
+
+```{r}
+url = "https://www.imdb.com/search/title/?genres=action"
+
+jai = read_html(url) %>% html_nodes("ipc-title")
+
+jai
+```
+
+```{r}
+library(rvest)
+library(dplyr)
+
+scrape_imdb_updated <- function(genre, page) {
+  start <- (page - 1) * 50 + 1
+  url <- paste0("https://www.imdb.com/search/title/?genres=", genre, "&title_type=feature&start=", start)
+  page_content <- read_html(url)
+
+  # New structure
+  titles <- page_content %>% html_nodes("h3.ipc-title__text") %>% html_text(trim = TRUE)
+  ratings <- page_content %>% html_nodes(".ratingGroup--imdb-rating") %>%
+    html_text(trim = TRUE)
+  
+  # Optional: extract years, genres, etc., depending on structure.
+  data.frame(
+    Title = titles,
+    Rating = ratings[1:length(titles)],  # Adjust if lengths mismatch
+    stringsAsFactors = FALSE
+  )
+}
+
+# Example usage
+action_movies <- scrape_imdb_updated("action", 1)
+head(action_movies)
+
+
+```
+
+```{r}
+genres = c("action", "comedy")
+```
+
+```{r}
+url = "https://www.imdb.com/search/title/?genres=action"
+
+page = read_html(url)
+
+page %>% html_nodes("h3.ipc-title__text") %>% html_text()
+```
+
+```{r}
+page %>% html_nodes("span.ipc-rating-star--rating") %>% html_text
+```
+
+```{r}
+page %>% html_nodes("span.ipc-rating-star--voteCount") %>% html_text()
+```
+
+```{r}
+page %>% html_nodes("div.ipc-html-content-inner-div") %>% html_text
+```
+
+```{r}
+page %>% html_nodes("a.ipc-link") %>% html_text
+```
+
+```{r}
+page %>% html_nodes("span.sc-4b408797-8") %>% html_text
+```
+
+# Text Data Analysis
+
+## Latent Dirichlet Allocation (LDA)
+
+```{r}
+library(topicmodels)
+
+data("AssociatedPress")
+AssociatedPress
+```
+
+```{r}
+ap_lda = LDA(AssociatedPress, k=2, control=list(seed=1234))
+
+ap_lda
+```
+
+```{r}
+library(tidytext)
+library(reshape2)
+
+ap_topics = tidy(ap_lda, matrix='beta')
+ap_topics
+```
+
+```{r}
+library(ggplot2)
+library(dplyr)
+
+ap_top_terms = ap_topics %>% 
+  group_by(topic) %>%
+  top_n(10, beta) %>%
+  ungroup() %>% 
+  arrange(topic, -beta)
+
+ap_top_terms %>%
+  mutate(term = reorder(term, beta)) %>%
+  ggplot(aes(term, beta, fill = factor(topic))) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ topic, scales = "free") + 
+  coord_flip()
+```
+
+```{r}
+library(tidyr)
+
+beta_spread = ap_topics %>%
+  mutate(topic = paste0("topic", topic)) %>%
+  spread(topic, beta) %>%
+  filter(topic1 > 0.001 | topic2 > 0.001) %>%
+  mutate(log_ratio = log2(topic2 / topic1))
+         
+beta_spread
+```
+
+```{r}
+beta_spread %>% 
+  mutate(term=reorder(term,log_ratio))%>% 
+  ggplot(aes(term,log_ratio)) +
+  geom_col(show.legend=FALSE) +
+  coord_flip()
+```
+
+```{r}
+ap_documents = tidy(ap_lda, matrix = "gamma") # extract the per-document-per-topic-probabilities
+
+ap_documents
+```
+
+```{r}
+# check the most common words in the document eg document6
+tidy(AssociatedPress) %>%
+  filter(document==6) %>%
+  arrange(desc(count))
+```
+
+## Text Cluster Analysis
+
+```{r}
+mytext<-DirSource("TextFile")
+docs<-VCorpus(mytext)
+docs <- tm_map(docs,content_transformer(tolower)) 
+toSpace <- content_transformer(function(x, pattern) {
+  return (gsub(pattern, " ", x))}) 
+docs <- tm_map(docs, toSpace, "-")
+docs <- tm_map(docs, toSpace, ":")
+docs <- tm_map(docs, toSpace, "'")
+docs <- tm_map(docs, toSpace, ".")
+docs <- tm_map(docs, toSpace, "-")
+docs <- tm_map(docs, removePunctuation) #remove punctuation
+docs <- tm_map(docs, removeNumbers) #Strip digits
+docs <- tm_map(docs, removeWords, stopword("english")) #remove stopwords
+docs <- tm_map(docs, stripWhitespace) #remove whitespace
+```
+
+```{r}
+tdm <- DocumentTermMatrix(docs) #Create document term matrix
+tdm
+
+#Present text data numerically, weighted TF-IDF
+tdm.tfidf <- weightTfIdf(tdm)
+tdm.tfidf <- removeSparseTerms(tdm.tfidf, 0.999)
+tfidf.matrix <- as.matrix(tdm.tfidf) 
+
+# Cosine distance matrix (useful for specific clustering algorithms) 
+library(proxy)
+dist.matrix <- dist(tfidf.matrix, method = "cosine")
+
+```
+
+```{r}
+truth.K=2
+#Perform clustering
+library(dbscan)
+clustering.kmeans <- kmeans(tfidf.matrix, truth.K) 
+clustering.hierarchical <- hclust(dist.matrix, method = "ward.D2") 
+clustering.dbscan <- hdbscan(dist.matrix, minPts = 10)
+```
+
+```{r}
+library(cluster)
+clusplot(as.matrix(dist.matrix),
+         clustering.kmeans$cluster,
+         color=T,
+         shade=T,
+         labels=2,
+         lines=0)
+plot(clustering.hierarchical)
+rect.hclust(clustering.hierarchical,2)
+plot(as.matrix(dist.matrix),col=clustering.dbscan$cluster+1L)
+```
+
+```{r}
+#Combine results
+master.cluster <- clustering.kmeans$cluster
+slave.hierarchical <- cutree(clustering.hierarchical, k = truth.K) 
+slave.dbscan <- clustering.dbscan$cluster
+```
+
+```{r}
+#plotting results
+library(colorspace)
+points <- cmdscale(dist.matrix, k = 2) 
+palette <- diverge_hcl(truth.K) # Creating a color palette, need library(colorspace)
+#layout(matrix(1:3,ncol=1))
+```
+
+```{r}
+plot(points, 
+     main = 'K-Means clustering', 
+     col = as.factor(master.cluster), 
+     mai = c(0, 0, 0, 0), 
+     mar = c(0, 0, 0, 0), 
+     xaxt = 'n', 
+     yaxt = 'n', 
+     xlab = '', 
+     ylab = '') 
+plot(points, 
+     main = 'Hierarchical clustering', 
+     col = as.factor(slave.hierarchical), 
+     mai = c(0, 0, 0, 0), 
+     mar = c(0, 0, 0, 0),
+     xaxt = 'n',
+     yaxt = 'n', 
+     xlab = '', 
+     ylab = '') 
+plot(points, 
+     main = 'Density-based clustering', 
+     col = as.factor(slave.dbscan), 
+     mai = c(0, 0, 0, 0), mar = c(0, 0, 0, 0), 
+     xaxt = 'n', 
+     yaxt = 'n', 
+     xlab = '', 
+     ylab = '')
+```
+
+```{r}
+table(master.cluster)
+table(slave.hierarchical)
+table(slave.dbscan)
+```
+
+```{r}
+#Elbow plot
+#accumulator for cost results
+cost_df <- data.frame()
+#run kmeans for all clusters up to 100
+for(i in 1:20){
+#Run kmeans for each level of i, allowing up to 100 iterations for convergence
+  kmeans<- kmeans(x=tfidf.matrix, centers=i, iter.max=100)
+#Combine cluster number and cost together, write to df
+  cost_df<- rbind(cost_df, cbind(i, kmeans$tot.withinss))
+}
+names(cost_df) <- c("cluster", "cost")
+plot(cost_df$cluster, cost_df$cost)
+lines(cost_df$cluster, cost_df$cost)
+```
+
+## Sentiment Analysis
+
+```{r data_prepping}
+library(tm)
+library(SnowballC)
+library(wordcloud)
+text=readLines(file.choose())
+docs=Corpus(VectorSource(text))
+inspect(docs)
+toSpace=content_transformer(function(x,pattern)gsub(pattern," ",x))
+docs=tm_map(docs, toSpace, "/")
+docs=tm_map(docs, toSpace, "@")
+docs=tm_map(docs, toSpace, "\\|")
+docs=tm_map(docs,content_transformer(tolower))
+docs=tm_map(docs,removeNumbers)
+docs=tm_map(docs,removeWords, stopwords("english"))
+docs=tm_map(docs,removeWords, c("dan","dengan","atau","sebagai","yang","itu",
+                                "ini","asm","dari","daripada"))
+docs=tm_map(docs,removePunctuation)
+docs=tm_map(docs,stripWhitespace)
+docs=tm_map(docs,stemDocument)
+dtm=TermDocumentMatrix(docs)
+m=as.matrix(dtm)
+v=sort(rowSums(m),decreasing=TRUE)
+d=data.frame(word=names(v),freq=v)
+m=d$word
+
+```
+
+```{r sentiment_analysis}
+mysentiment<-function(m)
+{
+  mydictpos=c("baik","cantik","bijak","kuat")
+  mydictneg=c("jahat","buruk","bodoh","lemah")
+  pos_score=sum(!is.na(match(m,mydictpos)))
+  neg_score=(-1)*sum(!is.na(match(m,mydictneg)))
+  sentiment_score=pos_score+neg_score
+  sentiment_score
+}
 ```

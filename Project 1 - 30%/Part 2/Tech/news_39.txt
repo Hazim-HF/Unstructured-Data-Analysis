@@ -1,0 +1,23 @@
+Rednote joins wave of Chinese firms releasing open-source AI models
+
+BEIJING (June 9): China's Rednote, one of the country's most popular social media platforms, has released an open-source large language model, joining a wave of Chinese tech firms making their artificial intelligence (AI) models freely available.
+
+The approach contrasts with many US tech giants like OpenAI and Google, which have kept their most advanced models proprietary, though some American firms including Meta have also released open-source models.
+
+Open sourcing allows Chinese companies to demonstrate their technological capabilities, build developer communities and spread influence globally at a time when the US has sought to stymie China's tech progress with export restrictions on advanced semiconductors.
+
+Rednote's model, called dots.llm1, is available for download on developer platform Hugging Face. A company technical paper describing it was uploaded on Friday.
+
+In coding tasks, the model performs comparably to Alibaba's Qwen 2.5 series, though it trails more advanced models such as DeepSeek-V3, the technical paper said.
+
+RedNote, also known by its Chinese name Xiaohongshu, is an Instagram-like platform where users share photos, videos, text posts and live streams. The platform gained international attention earlier this year when some US users flocked to the app amid concerns over a potential TikTok ban.
+
+The company has invested in large language model development since 2023, not long after OpenAI's release of ChatGPT in late 2022.
+
+It has accelerated its AI efforts in recent months, launching Diandian, an AI-powered search application that helps users find content on Xiaohongshu's main platform.
+
+Other companies that are pursuing an open-source approach include Alibaba which launched Qwen 3, an upgraded version of its model in April.
+
+Earlier this year, startup DeepSeek released its low-cost R1 model as open-source software, shaking up the global AI industry due to its competitive performance despite being developed at a fraction of the cost of Western rivals.
+
+Uploaded by Siow Chen Ming

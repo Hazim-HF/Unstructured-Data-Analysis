@@ -1,0 +1,53 @@
+---
+title: "Part 1 - Task 3"
+output: html_document
+---
+
+```{r}
+library(tm)
+library(wordcloud2)
+library(tidyverse)
+```
+
+```{r}
+getwd()
+
+path = "D:/01. Education/02. Master/Semester 2/Unstructured-Data-Analysis/Project 1 - 30%/Part 1/Part 1 - Task 3/Data"
+
+file.names = list.files(path, pattern = "*.csv", full.names=TRUE)
+
+```
+
+```{r}
+
+for (n in 1:5) {
+  text = lapply(file.names, readLines)
+  
+  lyrics = text[[n]]
+  
+  toSpace = content_transformer(function(x, pattern) gsub(pattern, " ", x))
+  
+  docs = Corpus(VectorSource(lyrics))
+  
+  docs = tm_map(docs, toSpace, "!")
+  docs = tm_map(docs, toSpace, "-")
+  docs = tm_map(docs, content_transformer(tolower))
+  docs = tm_map(docs, removeNumbers)
+  docs = tm_map(docs, removeWords, stopwords("english"))
+  docs = tm_map(docs, removePunctuation)
+  docs = tm_map(docs, stripWhitespace)
+  docs = tm_map(docs, stemDocument)
+  
+  dtm = DocumentTermMatrix(docs)
+  
+  freq = colSums(as.matrix(dtm))
+  
+  df = data.frame(term = names(freq), freq = freq)
+  
+  df = df %>%
+    arrange(desc(freq)) %>%
+    filter(freq >= 3)
+  
+  print(wordcloud2(df))
+}
+```

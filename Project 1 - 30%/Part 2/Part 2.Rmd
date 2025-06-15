@@ -1,0 +1,225 @@
+---
+title: "Part 2"
+output: html_document
+---
+
+# Task 1: Topic Modelling Analysis using LDA
+
+```{r}
+library(tm)
+library(ggplot2)
+library(tidytext)
+library(topicmodels)
+library(dplyr)
+library(tidyr)
+library(proxy)
+library(dbscan)
+```
+
+```{r}
+# Read files
+#path = "D:/01. Education/02. Master/Semester 2/Unstructured-Data-Analysis/Project 1 - 30%/Part 2/Tech"
+
+#filenames = list.files(path, pattern="*.txt", full.names = TRUE)
+
+#text = lapply(filenames, readLines)
+
+#docs = VCorpus(VectorSource(text))
+
+docs = VCorpus(DirSource('Tech'))
+
+# Text cleaning
+
+toSpace = content_transformer(function(x, pattern){
+  return(gsub(pattern, " ", x))
+})
+
+docs = tm_map(docs, toSpace, "!")
+docs = tm_map(docs, content_transformer(tolower))
+docs = tm_map(docs, removePunctuation)
+docs = tm_map(docs, removeNumbers)
+docs = tm_map(docs, removeWords, stopwords("english"))
+docs = tm_map(docs, stripWhitespace)
+
+# Create dtm
+dtm = DocumentTermMatrix(docs)
+inspect(dtm)
+```
+
+```{r}
+# apply LDA
+k = 3
+lda_model = LDA(dtm, k = k, control = list(seed = 1234))
+lda_model
+```
+
+```{r}
+topics = tidy(lda_model, matrix='beta')# %>% #library(tidytext)
+  #filter(topic==2) %>%
+  arrange(desc(beta))
+```
+
+```{r}
+top_terms = topics %>%
+  group_by(topic) %>%
+  top_n(10, beta) %>%
+  ungroup() %>%
+  arrange(topic, -beta)
+top_terms
+```
+
+```{r}
+top_terms %>%
+  group_by(topic) %>%
+  mutate(term = reorder_within(term, beta, topic)) %>%
+  ggplot(aes(x = term, y = beta, fill = factor(topic))) +
+  geom_col(show.legend = FALSE, width = 0.7) +
+  facet_wrap(~topic, scales = "free", ncol = 3) +
+  coord_flip() +
+  scale_x_reordered() +
+  scale_fill_brewer(palette = "Set2") +
+  labs(
+    title = "Top Terms per Topic",
+    subtitle = "Sorted by Beta Value within Each Topic",
+    x = "Term",
+    y = "Beta (P(term | topic))"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.grid = element_blank(),
+    strip.text = element_text(face = "bold", size = 14),
+    axis.text.y = element_text(size = 12),
+    axis.text.x = element_text(size = 12),
+    plot.title = element_text(face = "bold", hjust = 0.5, size = 18),
+    plot.subtitle = element_text(hjust = 0.5, size = 14)
+  )
+```
+
+```{r}
+topic1vstopic2 <- topics %>%
+  mutate(topic = paste0("topic", topic)) %>%
+  spread(topic,beta) %>%
+  filter(topic1 > 0.007 | topic2 > 0.007) %>%
+  mutate(log_ratio = log2(topic2/topic1))
+
+topic1vstopic2 %>%
+  mutate(term=reorder(term,log_ratio)) %>%
+  ggplot(aes(term, log_ratio)) +
+  geom_col(show.legend=F) +
+  coord_flip()
+```
+
+```{r}
+topic2vstopic3 <- topics %>%
+  mutate(topic = paste0("topic", topic)) %>%
+  spread(topic,beta) %>%
+  filter(topic2 > 0.01 | topic3 > 0.01) %>%
+  mutate(log_ratio = log2(topic3/topic2))
+
+topic2vstopic3 %>%
+  mutate(term=reorder(term,log_ratio)) %>%
+  ggplot(aes(term, log_ratio)) +
+  geom_col(show.legend=F) +
+  coord_flip()
+```
+
+```{r}
+topic1vstopic3 <- topics %>%
+  mutate(topic = paste0("topic", topic)) %>%
+  spread(topic,beta) %>%
+  filter(topic1 > 0.01 | topic3 > 0.01) %>%
+  mutate(log_ratio = log2(topic3/topic1))
+
+topic1vstopic3 %>%
+  mutate(term=reorder(term,log_ratio)) %>%
+  ggplot(aes(term, log_ratio)) +
+  geom_col(show.legend=F) +
+  coord_flip()
+```
+
+# Task 2: Text Clustering
+
+```{r}
+dtm.tfidf <- weightTfIdf(dtm)
+dtm.tfidf <- removeSparseTerms(dtm.tfidf,0.999)
+tfidf.matrix <- as.matrix(dtm.tfidf)
+
+# Compute cosine distance
+dist.matrix <- dist(tfidf.matrix, method = 'cosine')
+
+# elbow plot
+cost_df <- data.frame()
+for (i in 1:30) {
+  kmeans <- kmeans(x=tfidf.matrix, centers=i, iter.max=100)
+  cost_df <- rbind(cost_df, cbind(i,kmeans$tot.withinss))
+}
+
+names(cost_df) <- c("cluster","cost")
+plot(cost_df$cluster, cost_df$cost)
+lines(cost_df$cluster, cost_df$cost)
+
+# clustering algorithm
+truth.K=4
+
+clustering.kmeans<- kmeans(tfidf.matrix , truth.K)
+clustering.hierarchical <-hclust(dist.matrix , method = "ward.D2")
+clustering.dbscan <-hdbscan(dist.matrix , minPts=10)
+```
+
+```{r}
+master.cluster <- clustering.kmeans$cluster
+slave.hierarchical <- cutree(clustering.hierarchical, k = truth.K)
+slave.dbscan <- clustering.dbscan$cluster
+
+table(master.cluster)
+table(slave.hierarchical)
+table(slave.dbscan)
+```
+
+```{r}
+points <- cmdscale(dist.matrix, k = 4)
+
+palette <- diverge_hcl(truth.K) # Creating a color palette
+
+plot(points, main = 'K-Means Clustering', 
+     col = as.factor(master.cluster),
+     mai = c(0,0,0,0), 
+     mar = c(0,0,0,0),
+     xaxt = 'n', 
+     yaxt = 'n', 
+     xlab = '', 
+     ylab = '')
+
+plot(points, 
+     main = 'Hierarchical Clustering', 
+     col = as.factor(slave.hierarchical),
+     mai = c(0,0,0,0), 
+     mar = c(0,0,0,0),
+     xaxt = 'n', 
+     yaxt = 'n', 
+     xlab = '', 
+     ylab = '')
+
+plot(points, 
+     main = 'Densty-based Clustering', 
+     col = as.factor(slave.dbscan),
+     mai = c(0,0,0,0), 
+     mar = c(0,0,0,0),
+     xaxt = 'n', 
+     yaxt = 'n', 
+     xlab = '',
+     ylab = '')
+
+clusplot(as.matrix(dist.matrix),
+         clustering.kmeans$cluster,
+         color=T,
+         shade=T,
+         labels=2,
+         lines=0)
+
+plot(clustering.hierarchical, cex = 0.6)
+
+rect.hclust(clustering.hierarchical, k=4)
+
+plot(as.matrix(dist.matrix), col=clustering.dbscan$cluster+1L)
+```

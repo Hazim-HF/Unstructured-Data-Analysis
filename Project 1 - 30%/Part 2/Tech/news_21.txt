@@ -1,0 +1,42 @@
+Huawei chips are one generation behind US but firm finding workarounds, CEO says
+
+By Liz Lee, Brenda Goh & David Shepherdson / Reuters
+
+BEIJING/SHANGHAI/WASHINGTON (June 10): Huawei Technologies' chips are one generation behind those of US peers but the firm is finding ways to improve performance through methods such as cluster computing, Chinese state media quoted chief executive officer Ren Zhengfei as saying on Tuesday.
+
+The chipmaker invests 180 billion yuan (US$25.07 billion, or RM106.18 billion) in research annually, and sees promise in compound chips — chips made from multiple elements, Ren said in an interview with the People's Daily newspaper of the governing Communist Party.
+
+There is "no need to worry about the chip problem", Ren said, addressing concerns stemming from US export controls.
+
+The article, published on the front page of the newspaper, comes as top US and Chinese officials are set to resume trade talks for a second day in London, where topics such US tech restrictions on China are expected to be discussed.
+
+Since 2019, a slew of US export curbs, aimed at curbing China's technological and military advancements, have restricted Huawei and other Chinese firms from accessing high-end chips and the equipment needed to produce them from abroad.
+
+Ren's comments are the first ever from him or Huawei about the company's advanced chipmaking efforts, which have become a flashpoint in US-China tensions.
+
+Huawei is just one of many Chinese chipmakers, Ren said in the interview, adding: "The United States has exaggerated Huawei's achievements. Huawei is not that great. We have to work hard to reach their evaluation".
+
+"Our single chip is still behind the US by a generation. We use mathematics to supplement physics, non-Moore's law to supplement Moore's law, and cluster computing to supplement single chips, and the results can also achieve practical conditions. Software is not a bottleneck for us," he said.
+
+Cluster computing is when multiple computers work together. Moore's law refers to the speed of chip advancement.
+
+Huawei's launches
+
+Huawei's Ascend series of AI chips compete in China with offerings from Nvidia, the global leader in artificial intelligence (AI) chips.
+
+The US Commerce Department said last month that the use of Ascend chips would be a violation of export controls.
+
+Nvidia's AI chips are more powerful than Huawei's but the company has been barred by Washington from selling its most sophisticated chips to China, causing it to lose significant market share to Huawei.
+
+In April, Huawei launched "AI CloudMatrix 384", a system that links 384 Ascend 910C chips in a cluster that companies can use to train AI models, which has been described by analysts as able to outperform Nvidia's GB200 NVL72 system on some metrics.
+
+Dylan Patel, founder of semiconductor research group SemiAnalysis, said in an article that month that it meant that Huawei and China now have AI system capabilities that could beat Nvidia.
+
+Nvidia and the US Commerce Department did not immediately respond to a request for comment on Ren's remarks.
+
+Ren also said that about a third of Huawei's annual research spending went to theoretical research, while the rest was spent on product research and development.
+
+"Without theory, there will be no breakthroughs, and we will not catch up with the United States."
+
+Uploaded by Liza Shireen Koshy
+
