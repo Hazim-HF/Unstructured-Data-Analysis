@@ -1,0 +1,88 @@
+---
+title: "Part 2 - Task 3"
+output: html_document
+---
+
+# Sentiment Scores
+
+```{r}
+library(syuzhet)
+```
+
+```{r}
+reviews = read_csv('food/Reviews.csv')
+
+text = reviews$Text
+
+head(text)
+```
+
+```{r syuzhet}
+syuzhet_vector = get_sentiment(text, method = "syuzhet")
+head(syuzhet_vector)
+summary(syuzhet_vector)
+```
+
+```{r bing}
+bing_vector = get_sentiment(text, method = "bing")
+head(bing_vector)
+summary(bing_vector)
+```
+
+```{r afinn}
+afinn_vector = get_sentiment(text, method = "afinn")
+head(afinn_vector)
+summary(afinn_vector)
+```
+
+```{r nrc}
+nrc_vector = get_sentiment(text, method = "nrc")
+head(nrc_vector)
+summary(nrc_vector)
+```
+
+```{r comparison}
+rbind(sign(head(syuzhet_vector)),
+      sign(head(bing_vector)),
+      sign(head(afinn_vector)),
+      sign(head(nrc_vector)))
+```
+
+# Sentiment Analysis
+
+```{r}
+sentiment = get_nrc_sentiment(text)
+head(sentiment)
+```
+
+```{r}
+df = data.frame(t(sentiment))
+df2 = data.frame(rowSums(df))
+names(df2)[1] = "count"
+df2 = cbind("sentiment" = rownames(df2), df2)
+rownames(df2) = NULL
+df3 = df2[1:8,]
+```
+
+```{r}
+emotion_graph = quickplot(sentiment, 
+                           data=df3, 
+                           weight=count, 
+                           geom="bar", 
+                           fill=sentiment, 
+                           ylab="count") + 
+  ggtitle("Survey Sentiments")
+
+ggsave("sentiment.png", plot = emotion_graph)
+```
+
+```{r}
+barplot(sort(colSums(prop.table(sentiment[,1:8]))),
+        horiz = TRUE,
+        cex.names = 0.7,
+        las = 1,
+        main = "Emotions in Text",
+        xlab = "Percentage")
+
+
+```

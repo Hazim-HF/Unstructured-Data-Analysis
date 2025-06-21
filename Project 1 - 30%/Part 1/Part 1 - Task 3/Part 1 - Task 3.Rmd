@@ -7,36 +7,42 @@ output: html_document
 library(tm)
 library(wordcloud2)
 library(tidyverse)
+library(textstem)
 ```
 
 ```{r}
-getwd()
-
 path = "D:/01. Education/02. Master/Semester 2/Unstructured-Data-Analysis/Project 1 - 30%/Part 1/Part 1 - Task 3/Data"
 
 file.names = list.files(path, pattern = "*.csv", full.names=TRUE)
-
 ```
 
 ```{r}
-
-for (n in 1:5) {
+analysis = function(x){
+  # read text data
   text = lapply(file.names, readLines)
+  lyrics = text[[x]]
   
-  lyrics = text[[n]]
+  # custom additional stopwords
+  add_stopwords = c("chorus", "verse", "will", "tell", "just", "know", "see",
+                    "right", "now", "can", "ever", "say", "let", "ooh", "ill",
+                    "get", "like", "make", "back", "dip", "thats", "use", "keep", 
+                    "check")
   
+  # text cleaning
   toSpace = content_transformer(function(x, pattern) gsub(pattern, " ", x))
-  
   docs = Corpus(VectorSource(lyrics))
-  
-  docs = tm_map(docs, toSpace, "!")
-  docs = tm_map(docs, toSpace, "-")
+  docs = tm_map(docs, toSpace, "—")
   docs = tm_map(docs, content_transformer(tolower))
   docs = tm_map(docs, removeNumbers)
-  docs = tm_map(docs, removeWords, stopwords("english"))
   docs = tm_map(docs, removePunctuation)
+  docs = tm_map(docs, removeWords, stopwords("english"))
+  docs = tm_map(docs, removeWords, add_stopwords)
   docs = tm_map(docs, stripWhitespace)
-  docs = tm_map(docs, stemDocument)
+  
+  # lemmatization
+  text_data = sapply(docs, as.character)
+  lemmatize_text =lemmatize_strings(text_data)
+  docs = Corpus(VectorSource(lemmatize_text))
   
   dtm = DocumentTermMatrix(docs)
   
@@ -45,9 +51,34 @@ for (n in 1:5) {
   df = data.frame(term = names(freq), freq = freq)
   
   df = df %>%
-    arrange(desc(freq)) %>%
-    filter(freq >= 3)
+    arrange(desc(freq))
   
-  print(wordcloud2(df))
+  print(head(df, 5))
+  print(wordcloud2(df, shape = "star", size = 0.7, minSize = 0))
 }
+```
+
+```{r}
+# output from Blue - Yung Kai lyrics
+analysis(1)
+```
+
+```{r}
+# output from Eminem - Rap God lyrics
+analysis(2)
+```
+
+```{r}
+# output for Fool's Garden - Lemon Tree
+analysis(3)
+```
+
+```{r}
+# output from Maher Zain - For The Rest of My Life lyrics
+analysis(4)
+```
+
+```{r}
+# output from The Contracts - Twenty One Pilots lyrics
+analysis(5)
 ```

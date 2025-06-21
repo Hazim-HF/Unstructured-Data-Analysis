@@ -1,0 +1,35 @@
+OpenAI tapping Google in unprecedented cloud deal despite AI rivalry, Reuters reports
+
+By Kenrick Cai & Krystal Hu / Reuters
+
+SAN FRANCISCO (June 10): OpenAI plans to add Alphabet's Google cloud service to meet its growing needs for computing capacity, three sources told Reuters, marking a surprising collaboration between two prominent competitors in the artificial intelligence (AI) sector.
+
+The deal, which has been under discussion for a few months, was finalised in May, one of the sources added. It underscores how massive computing demands to train and deploy AI models are reshaping the competitive dynamics in AI, and marks OpenAI's latest move to diversify its compute sources beyond its major supporter Microsoft, including its high-profile Stargate data centre project.
+
+It is a win for Google's cloud unit, which will supply additional computing capacity to OpenAI's existing infrastructure for training and running its AI models, sources said, who requested anonymity to discuss private matters. The move also comes as OpenAI's ChatGPT poses the biggest threat to Google's dominant search business in years, with Google executives recently saying that the AI race may not be winner-take-all.
+
+OpenAI, Google and Microsoft declined to comment.
+
+Since ChatGPT burst onto the scene in late 2022, OpenAI has dealt with increasing demand for computing capacity — known in the industry as compute — for training large language models, as well as for running inference, which involves processing information so people can use these models. OpenAI said on Monday that its annualised revenue run rate surged to US$10 billion (RM42.36 billion) as of June, positioning the company to hit its full-year target amid booming adoption of AI.
+
+Earlier this year, OpenAI partnered with SoftBank and Oracle on the US$500 billion Stargate infrastructure programme, and signed deals worth billions with CoreWeave for more compute. It is on track this year to finalise the design of its first in-house chip that could reduce its dependency on external hardware providers, Reuters reported in February.
+
+The partnership with Google is the latest of several manoeuvres made by OpenAI to reduce its dependency on Microsoft, whose Azure cloud service had served as the ChatGPT maker's exclusive data centre infrastructure provider until January. Google and OpenAI discussed an arrangement for months but were previously blocked from signing a deal due to OpenAI's lock-in with Microsoft, a source told Reuters. Microsoft and OpenAI are also in negotiations to revise the terms of their multibillion-dollar investment, including the future equity stake Microsoft will hold in OpenAI.
+
+For Google, the deal comes as the tech giant is expanding external availability of its in-house chip known as tensor processing units, or TPUs, which were historically reserved for internal use. That helped Google win customers including Big Tech player Apple as well as start-ups like Anthropic and Safe Superintelligence, two OpenAI competitors launched by former OpenAI leaders.
+
+Google's addition of OpenAI to its customer list shows how the tech giant has capitalised on its in-house AI technology from hardware to software to accelerate the growth of its cloud business.
+
+Google Cloud, whose US$43 billion of sales comprised 12% of Alphabet's 2024 revenue, has positioned itself as a neutral arbiter of computing resources in an effort to outflank Amazon and Microsoft as the cloud provider of choice for a rising legion of AI start-ups whose heavy infrastructure demands generate costly bills.
+
+Alphabet faces market pressure to demonstrate financial returns on its AI-related capital expenditures, which are expected to hit US$75 billion this year, while maintaining its bottom line against the threat of competing AI offerings, as well as antitrust enforcement.
+
+Google's DeepMind AI unit also competes directly with OpenAI and Anthropic in a race to develop the best models and integrate those advances into consumer applications.
+
+Selling computing power reduces Google's own supply of chips while bolstering capacity-constrained rivals. The OpenAI deal will further complicate how Alphabet chief executive officer Sundar Pichai allocates the capacity between the competing interests of Google's enterprise and consumer business segments.
+
+Google already lacked sufficient capacity to meet its cloud customers' demands as of the last quarter, chief financial officer Anat Ashkenazi told analysts in April.
+
+Although ChatGPT holds a large lead over Google's competing chatbot in terms of monthly users and analysts have predicted it could reduce Google's dominant search market share, Pichai has brushed aside concerns that OpenAI will usurp Google's business dominance.
+
+Uploaded by Tham Yek Lee

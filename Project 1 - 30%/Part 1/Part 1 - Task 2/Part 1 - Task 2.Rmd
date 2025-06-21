@@ -3,259 +3,128 @@ title: "Part 1 - Task 2"
 output: html_document
 ---
 
+# Audio Devices
+
 ```{r}
 library(rvest)
 library(tidyverse)
+library(stringr)
 ```
 
 ```{r}
-library(rvest)
 
-# Read the HTML file
-page <- read_html("https://www.amazon.com/s?k=laptop&page=1")
-
-# Extract product containers
-products <- html_nodes(page, ".s-main-slot .s-result-item")
-
-# Extract product title
-titles <- products %>% html_node("h2 span") %>% html_text(trim = TRUE)
-
-# Extract product price (whole and fractional)
-price_whole <- products %>% html_node(".a-price-whole") %>% html_text(trim = TRUE)
-price_fraction <- products %>% html_node(".a-price-fraction") %>% html_text(trim = TRUE)
-
-# Combine the whole and fractional price
-prices <- ifelse(!is.na(price_whole), paste0(price_whole, price_fraction), NA)
-
-# Extract product rating
-ratings <- products %>% html_node(".a-icon-alt") %>% html_text(trim = TRUE)
-
-# Combine into a data frame
-laptop_data <- data.frame(
-  Title = titles,
-  Price = prices,
-  Rating = ratings,
+earbuds_df = data.frame(
+  Title = character(),
+  Price = character(),
+  Rating = character(),
+  Review_Count = character(),
   stringsAsFactors = FALSE
 )
 
-print(laptop_data)
-
-```
-
-```{r}
-library(rvest)
-
-# Read HTML
-page <- read_html("https://www.amazon.com/s?k=laptop&page=1")
-
-# Extract product titles
-titles <- products %>% html_node("h2 span") %>% html_text(trim = TRUE)
-
-# Extract prices (whole and fraction)
-price_whole <- page %>%
-  html_nodes(".a-price-whole") %>%
-  html_text()
-
-price_fraction <- page %>%
-  html_nodes(".a-price-fraction") %>%
-  html_text()
-
-# Combine price whole + fraction
-prices <- paste0(price_whole, price_fraction)
-
-# Extract ratings (e.g., 4.5 out of 5 stars)
-ratings <- page %>%
-  html_nodes("span.a-icon-alt") %>%
-  html_text()
-
-# Extract number of reviews
-reviews <- page %>%
-  html_nodes("span.s-underline-text") %>%
-  html_text()
-
-# Clean rating (keep only numerical)
-ratings_clean <- gsub(" out of 5 stars", "", ratings)
-
-# Create dataframe
-laptop_data <- data.frame(
-  Title = titles,
-  Price = prices[1:length(titles)],      # Ensure lengths match
-  Rating = ratings_clean[1:length(titles)],
-  Reviews = reviews[1:length(titles)]
-)
-
-# View result
-print(head(laptop_data))
-```
-
-# Hathim
-
-```{r}
-newborn_pages <- paste0("https://www.amazon.com/s?k=newborn+diapers&page=",1:3)
-diapers_pages <- paste0("https://www.amazon.com/s?k=diapers&page=",1:3)
-```
-
-```{r}
-# Function to extract titles from a single page
-extract_details <- function(page_url) {
-  page <- read_html(page_url)
+for (n in 1:5) {
+  # Read the HTML file
+  page = read_html(paste0("https://www.amazon.com/s?k=Earbuds&page=", n))
   
-  # Extract product titles using the h2 tag with specific classes
-  title_nodes <- html_nodes(page, 'h2.a-size-base-plus.a-spacing-none.a-color-base.a-text-normal span')
-  price_nodes <- html_nodes(page, '.a-price-whole')
-  delivery_nodes <- html_nodes(page, 'div[data-cy="delivery-recipe"] span.a-text-bold')
+  # Extract product containers
+  products = html_nodes(page, ".s-main-slot .s-result-item")
   
-  # Get the text content
-  titles <- html_text(title_nodes)
-  prices <- html_text(price_nodes)
-  deliveries <- html_text(delivery_nodes)
+  # Extract product title
+  titles = products %>% html_node("h2 span") %>% html_text(trim = TRUE)
   
-  # Pad shorter vector with NA
-  max_len <- max(length(titles), length(prices), length(deliveries))
-  length(titles) <- max_len
-  length(prices) <- max_len
-  length(deliveries) <- max_len
+  # Extract product price (whole and fractional)
+  price_whole = products %>% html_node(".a-price-whole") %>% html_text(trim = TRUE)
+  price_fraction = products %>% html_node(".a-price-fraction") %>% html_text(trim = TRUE)
   
-  # Combine into dataframe
-  df <- data.frame(Title = titles, Price = prices, Deliveries = deliveries,stringsAsFactors = FALSE)
+  # Combine the whole and fractional price
+  #prices <- ifelse(!is.na(price_whole), paste0(price_whole, price_fraction), NA)
+  prices = paste0(price_whole, price_fraction)
   
-  return(df)
+  # Extract product rating
+  ratings = products %>% html_node(".a-icon-alt") %>% html_text(trim = TRUE) %>% str_extract("^[0-9\\.]+")
+  
+  review.count = products %>% html_node(".a-size-base.s-underline-text") %>% html_text(trim = TRUE)
+  
+  df_page = data.frame(
+    Title = titles,
+    Price = prices,
+    Rating = ratings,
+    Review_Count = review.count
+  )
+  
+  earbuds_df = bind_rows(earbuds_df, df_page)
+  
 }
 
-newborn <- do.call("rbind", lapply(newborn_pages, extract_details))
-diapers <- do.call("rbind", lapply(diapers_pages, extract_details))
+print(earbuds_df)
 ```
 
 ```{r}
-newborn_processed <- newborn %>%
-  mutate(
-    Price = as.numeric(Price),                        
-    DeliveryDateParsed = as.Date(                     
-      paste(Deliveries, format(Sys.Date(), "%Y")),
-      format = "%a, %b %d %Y"
-    ),
-    DeliveryDuration = as.numeric(DeliveryDateParsed - Sys.Date())
-  ) %>%
-  drop_na(Title, Price, DeliveryDateParsed) %>%
-  select(-Deliveries)
-
-  
-newborn_processed 
-```
-
-```{r}
-mean(newborn_processed$DeliveryDuration)
-```
-
-```{r}
-diapers_processed <- diapers %>%
-  mutate(                    
-    Price = as.numeric(Price),                        
-    DeliveryDateParsed = as.Date(                     
-      paste(Deliveries, format(Sys.Date(), "%Y")),
-      format = "%a, %b %d %Y"
-    ),
-    DeliveryDuration = as.numeric(DeliveryDateParsed - Sys.Date())
-  ) %>%
-  drop_na(Title, Price, DeliveryDateParsed) %>%
-  select(-Deliveries)
-
-diapers_processed
-```
-
-```{r}
-mean(diapers_processed$DeliveryDuration)
-```
-
-```{r}
-brands <- c("Huggies", "Pampers", "Mama Bear", "Dyper", "Hello Bello", "Luvs")
-
-# 1. Count matches for each brand (case-insensitive)
-brand_counts <- sapply(brands, function(brand) {
-  sum(str_detect(diapers_processed$Title, regex(brand, ignore_case = TRUE)))
-})
-
-# 2. Calculate mean price per brand
-brand_price <- function(brand) {
-  # Extract titles and prices matching the brand
-  matching <- str_detect(diapers_processed$Title, regex(brand, ignore_case = TRUE))
-  brand_prices <- diapers_processed$Price[matching]
-  
-  # Clean price and convert to numeric
-  brand_prices <- as.numeric(gsub(",", "", brand_prices))
-  brand_prices <- na.omit(brand_prices)
-  
-  # Return mean price if available
-  if (length(brand_prices) == 0) {
-    return(NA)
-  } else {
-    return(mean(brand_prices))
-  }
-}
-
-# 3. Combine results into data frame
-diapers_df <- data.frame(
-  Brand = brands,
-  Count = brand_counts,
-  Mean_Price = sapply(brands, brand_price),
+headphone_df = data.frame(
+  Title = character(),
+  Price = character(),
+  Rating = character(),
+  Review_Count = character(),
   stringsAsFactors = FALSE
 )
 
-print(diapers_df)
-```
-
-```{r}
-newborn_brand_counts <- sapply(brands, function(brand) {
-  pattern <- paste0("(?=.*newborn)(?=.*", brand, ")")
-  sum(str_detect(newborn_processed$Title, regex(pattern, ignore_case = TRUE)))
-})
-
-newborn_brand_price <- function(brand) {
-  pattern <- paste0("(?=.*newborn)(?=.*", brand, ")")
-  matching <- str_detect(newborn_processed$Title, regex(pattern, ignore_case = TRUE))
-  brand_prices <- newborn_processed$Price[matching]
+for (n in 1:5) {
+  # Read the HTML file
+  page = read_html(paste0("https://www.amazon.com/s?k=Headphone&page=", n))
   
-  brand_prices <- as.numeric(gsub(",", "", brand_prices))
-  brand_prices <- na.omit(brand_prices)
+  # Extract product containers
+  products = html_nodes(page, ".s-main-slot .s-result-item")
   
-  if (length(brand_prices) == 0) {
-    return(NA)
-  } else {
-    return(mean(brand_prices))
-  }
+  # Extract product title
+  titles = products %>% html_node("h2 span") %>% html_text(trim = TRUE)
+  
+  # Extract product price (whole and fractional)
+  price_whole = products %>% html_node(".a-price-whole") %>% html_text(trim = TRUE)
+  price_fraction = products %>% html_node(".a-price-fraction") %>% html_text(trim = TRUE)
+  
+  # Combine the whole and fractional price
+  prices = paste0(price_whole, price_fraction)
+  
+  # Extract product rating
+  ratings = products %>% html_node(".a-icon-alt") %>% html_text(trim = TRUE) %>% str_extract("^[0-9\\.]+")
+  
+  review.count = products %>% html_node(".a-size-base.s-underline-text") %>% html_text(trim = TRUE)
+  
+  df_page = data.frame(
+    Title = titles,
+    Price = prices,
+    Rating = ratings,
+    Review_Count = review.count
+  )
+  
+  headphone_df = bind_rows(headphone_df, df_page)
+  
 }
 
-newborn_df <- data.frame(
-  Brand = brands,
-  Count = newborn_brand_counts,
-  Mean_Price = sapply(brands, newborn_brand_price),
-  stringsAsFactors = FALSE
-)
-
-print(newborn_df)
+print(headphone_df)
 ```
 
 ```{r}
-library(RSelenium)
+earbuds_df = earbuds_df %>%
+  filter(Price != "NANA") %>%
+  drop_na(Price, Rating, Review_Count) %>% 
+  mutate(Price = parse_number(Price),
+         Rating = as.numeric(Rating),
+         Review_Count = parse_number(Review_Count)
+         )
 
-# Start Selenium server
-rD <- rsDriver(browser = "chrome", port = 4545L, chromever = "latest")
-remDr <- rD$client
+headphone_df = headphone_df %>%
+  filter(Price != "NANA") %>%
+  drop_na(Price, Rating, Review_Count) %>% 
+  mutate(Price = parse_number(Price),
+         Rating = as.numeric(Rating),
+         Review_Count = parse_number(Review_Count)
+         )
+```
 
-# Navigate to Fiverr
-url <- "https://www.fiverr.com/categories/programming-tech/software-development?source=pagination&filter=rating&page=2"
-remDr$navigate(url)
+```{r}
+print("Earbud Summary:")
+summary(earbuds_df)
 
-# Get page source after JavaScript renders
-page_source <- remDr$getPageSource()[[1]]
-library(rvest)
-html <- read_html(page_source)
-
-# Now you can use rvest functions to extract elements
-titles <- html %>% html_nodes(".gig-info .gig-title") %>% html_text()
-
-# Cleanup
-remDr$close()
-rD$server$stop()
-
+print("Headphone Summary:")
+summary(headphone_df)
 ```

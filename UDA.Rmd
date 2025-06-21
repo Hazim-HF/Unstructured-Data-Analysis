@@ -132,7 +132,15 @@ v = sort(rowSums(m), decreasing=T)
 df = data.frame(word=names(v), freq=v)
 
 library(wordcloud2)
-wordcloud2(df)
+wordcloud2(df, shape = 'diamond')
+```
+
+```{r}
+wordcloud2(df,
+           shape    = "star",
+           size     = 0.7,    # shrink if your big words are crowding out small ones
+           minSize  = 0       # ensures even 1-freq terms get drawn
+)
 ```
 
 # Plot
@@ -369,7 +377,7 @@ library(tidyr)
 beta_spread = ap_topics %>%
   mutate(topic = paste0("topic", topic)) %>%
   spread(topic, beta) %>%
-  filter(topic1 > 0.001 | topic2 > 0.001) %>%
+  filter(topic1 > 0.005 | topic2 > 0.005) %>%
   mutate(log_ratio = log2(topic2 / topic1))
          
 beta_spread
@@ -398,45 +406,57 @@ tidy(AssociatedPress) %>%
 
 ## Text Cluster Analysis
 
+### K-means
+
 ```{r}
-mytext<-DirSource("TextFile")
-docs<-VCorpus(mytext)
-docs <- tm_map(docs,content_transformer(tolower)) 
-toSpace <- content_transformer(function(x, pattern) {
-  return (gsub(pattern, " ", x))}) 
-docs <- tm_map(docs, toSpace, "-")
-docs <- tm_map(docs, toSpace, ":")
-docs <- tm_map(docs, toSpace, "'")
-docs <- tm_map(docs, toSpace, ".")
-docs <- tm_map(docs, toSpace, "-")
-docs <- tm_map(docs, removePunctuation) #remove punctuation
-docs <- tm_map(docs, removeNumbers) #Strip digits
-docs <- tm_map(docs, removeWords, stopword("english")) #remove stopwords
-docs <- tm_map(docs, stripWhitespace) #remove whitespace
+mytext2 <- DirSource("04. Text Data Analysis/TextMining-20250517")
+docsz <- Corpus(mytext2)
 ```
 
 ```{r}
-tdm <- DocumentTermMatrix(docs) #Create document term matrix
-tdm
+getTransformations()
+```
 
-#Present text data numerically, weighted TF-IDF
-tdm.tfidf <- weightTfIdf(tdm)
-tdm.tfidf <- removeSparseTerms(tdm.tfidf, 0.999)
-tfidf.matrix <- as.matrix(tdm.tfidf) 
+```{r}
+docsz <- tm_map(docsz,content_transformer(tolower))
 
-# Cosine distance matrix (useful for specific clustering algorithms) 
+toSpace <- content_transformer(function(x,pattern){
+  return(gsub(pattern," ", x))
+})
+
+docsz <- tm_map(docsz, toSpace, "-")
+docsz <- tm_map(docsz, removePunctuation) #remove punctuation
+docsz <- tm_map(docsz, removeNumbers) #Strip digits
+docsz <- tm_map(docsz, removeWords, stopwords("english")) #remove stopwords
+docsz <- tm_map(docsz, stripWhitespace) #remove whitespace
+```
+
+```{r}
+dtm <-DocumentTermMatrix(docsz) #Create document term matrix
+dtm
+```
+
+```{r}
+## Present text data numerically, weighted TF-IDF
+dtm.tfidf = weightTfIdf(dtm)
+dtm.tfidf = removeSparseTerms(dtm.tfidf, 0.999)
+tfidf.matrix = as.matrix(dtm.tfidf)
+```
+
+```{r}
+## Cosine distance matrix (useful for specific clustering algorithms)
 library(proxy)
-dist.matrix <- dist(tfidf.matrix, method = "cosine")
-
+dist.matrix = dist(tfidf.matrix , method = "cosine")
 ```
 
 ```{r}
-truth.K=2
-#Perform clustering
+## Perform clustering
+truth.K=3
+
 library(dbscan)
-clustering.kmeans <- kmeans(tfidf.matrix, truth.K) 
-clustering.hierarchical <- hclust(dist.matrix, method = "ward.D2") 
-clustering.dbscan <- hdbscan(dist.matrix, minPts = 10)
+clustering.kmeans = kmeans(tfidf.matrix , truth.K)
+clustering.hierarchical = hclust(dist.matrix , method = "ward.D2")
+clustering.dbscan = hdbscan(dist.matrix , minPts=10)
 ```
 
 ```{r}
@@ -448,52 +468,69 @@ clusplot(as.matrix(dist.matrix),
          labels=2,
          lines=0)
 plot(clustering.hierarchical)
-rect.hclust(clustering.hierarchical,2)
+rect.hclust(clustering.hierarchical,3)
 plot(as.matrix(dist.matrix),col=clustering.dbscan$cluster+1L)
 ```
 
 ```{r}
-#Combine results
-master.cluster <- clustering.kmeans$cluster
-slave.hierarchical <- cutree(clustering.hierarchical, k = truth.K) 
-slave.dbscan <- clustering.dbscan$cluster
+master.cluster = clustering.kmeans$cluster
+slave.hierarchical = cutree(clustering.hierarchical, k = truth.K)
+slave.dbscan = clustering.dbscan$cluster
 ```
 
 ```{r}
-#plotting results
 library(colorspace)
-points <- cmdscale(dist.matrix, k = 2) 
-palette <- diverge_hcl(truth.K) # Creating a color palette, need library(colorspace)
-#layout(matrix(1:3,ncol=1))
+points = cmdscale(dist.matrix, k = 3)
+palette = diverge_hcl(truth.K) # Creating a color palette
 ```
 
 ```{r}
 plot(points, 
-     main = 'K-Means clustering', 
-     col = as.factor(master.cluster), 
-     mai = c(0, 0, 0, 0), 
-     mar = c(0, 0, 0, 0), 
+     main = 'K-Means Clustering', 
+     col = as.factor(master.cluster),
+     pch = 16,
+     mai = c(0,0,0,0), 
+     mar = c(0,0,0,0),
      xaxt = 'n', 
      yaxt = 'n', 
      xlab = '', 
-     ylab = '') 
+     ylab ='')
+
 plot(points, 
-     main = 'Hierarchical clustering', 
-     col = as.factor(slave.hierarchical), 
-     mai = c(0, 0, 0, 0), 
-     mar = c(0, 0, 0, 0),
-     xaxt = 'n',
-     yaxt = 'n', 
-     xlab = '', 
-     ylab = '') 
-plot(points, 
-     main = 'Density-based clustering', 
-     col = as.factor(slave.dbscan), 
-     mai = c(0, 0, 0, 0), mar = c(0, 0, 0, 0), 
+     main = 'Hierarchical Clustering', 
+     col = as.factor(slave.hierarchical),
+     pch = 16,
+     mai = c(0,0,0,0), 
+     mar = c(0,0,0,0),
      xaxt = 'n', 
      yaxt = 'n', 
      xlab = '', 
-     ylab = '')
+     ylab ='')
+
+plot(points, 
+     main = 'Densty-based Clustering', 
+     pch = 16,
+     col = as.factor(slave.dbscan),
+     mai = c(0,0,0,0), 
+     mar = c(0,0,0,0),
+     xaxt = 'n', 
+     yaxt = 'n', 
+     xlab = '', 
+     ylab ='')
+```
+
+```{r}
+plot(points, 
+     main = 'K-Means Clustering', 
+     col = as.factor(master.cluster),
+     pch = 19,
+     mai = c(0,0,0,0), 
+     mar = c(0,0,0,0),
+     xaxt = 'n', 
+     yaxt = 'n', 
+     xlab = '', 
+     ylab ='')
+
 ```
 
 ```{r}
@@ -503,17 +540,19 @@ table(slave.dbscan)
 ```
 
 ```{r}
-#Elbow plot
-#accumulator for cost results
 cost_df <- data.frame()
-#run kmeans for all clusters up to 100
-for(i in 1:20){
-#Run kmeans for each level of i, allowing up to 100 iterations for convergence
-  kmeans<- kmeans(x=tfidf.matrix, centers=i, iter.max=100)
-#Combine cluster number and cost together, write to df
-  cost_df<- rbind(cost_df, cbind(i, kmeans$tot.withinss))
+```
+
+```{r}
+for (i in 1:20) {
+  kmeans <- kmeans(x=tfidf.matrix, centers=i, iter.max=100)
+  cost_df <- rbind(cost_df, cbind(i,kmeans$tot.withinss))
 }
-names(cost_df) <- c("cluster", "cost")
+
+names(cost_df) <- c("cluster","cost")
+```
+
+```{r}
 plot(cost_df$cluster, cost_df$cost)
 lines(cost_df$cluster, cost_df$cost)
 ```

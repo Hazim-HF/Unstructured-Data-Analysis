@@ -1,0 +1,21 @@
+Broadcom ships new gear meant to improve AI chip performance
+
+SEATTLE (June 3): Broadcom Inc began shipping a new version of its data centre switch chips that can boost the efficiency of artificial intelligence (AI) accelerators, aiming to take a bigger role in the booming market for AI computing.
+
+The company started delivering the Tomahawk 6 switch chips to customers over the weekend, and the product will be broadly available in July, said Ram Velaga, senior vice president and general manager of Broadcom’s Core Switching Group. Switches, a central piece of networking equipment, allow computers to communicate with one another. A single new Tomahawk 6 can do the work of six of the previous versions, Broadcom said.
+
+Shares of the company gained as much as 3.5% to US$257.50 (RM1,095) on Tuesday in New York, reaching a record high. They had been up 7.3% this year, through Monday’s close.
+
+The vast majority of AI computing — both for developing models and running them — relies on accelerators from Nvidia Corp. Such chips, known as graphics processing units, or GPUs, are pricey and remain in limited supply. The idea is to make those components more efficient when they’re networked together.
+
+As AI tasks become more complicated and the models get larger, data centre providers and researchers are chaining together tens of thousands, or even hundreds of thousands of GPUs into supercomputers that rely on networking gear to move data between the chips.
+
+Those GPUs typically run at a utilisation rate of only 30% to 40% because “they are waiting for the network to be able to communicate the data back and forth,” Velaga said. With Tomahawk 6, Broadcom projects that customers will be able to finish jobs faster using the GPUs they already have.
+
+Velaga declined to name the initial customers for the Tomahawk 6, but said they will include some of the largest cloud providers, as well as networking companies that build Broadcom technology into their products.
+
+The cost of making the new chip is more than double the level of the old one, Velaga said, and customers will pay about twice as much. He didn’t specify the exact cost, since some buyers negotiate volume discounts, but said it would be under US$20,000 apiece. 
+
+Broadcom has customers lined up to use the Tomahawk 6 to connect systems using more than 100,000 GPUs, he said. Generally speaking, you need about one switch per 10 GPUs, Velaga said.
+
+Uploaded by Liza Shireen Koshy

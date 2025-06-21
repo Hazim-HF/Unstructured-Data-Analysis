@@ -1,0 +1,23 @@
+OpenAI finds more Chinese groups using ChatGPT for malicious purposes
+
+SAN FRANCISCO (June 5): OpenAI is seeing an increasing number of Chinese groups using its artificial intelligence technology for covert operations, which the ChatGPT maker described in a report released Thursday.
+
+While the scope and tactics employed by these groups have expanded, the operations detected were generally small in scale and targeted limited audiences, the San Francisco-based start-up said.
+
+Since ChatGPT burst onto the scene in late 2022, there have been concerns about the potential consequences of generative AI technology, which can quickly and easily produce human-like text, imagery and audio.
+
+OpenAI regularly releases reports on malicious activity it detects on its platform, such as creating and debugging malware, or generating fake content for websites and social media platforms.
+
+In one example, OpenAI banned ChatGPT accounts that generated social media posts on political and geopolitical topics relevant to China, including criticism of a Taiwan-centric video game, false accusations against a Pakistani activist, and content related to the closure of USAID.
+
+Some content also criticised US President Donald Trump's sweeping tariffs, generating X posts, such as "Tariffs make imported goods outrageously expensive, yet the government splurges on overseas aid. Who's supposed to keep eating?".
+
+In another example, China-linked threat actors used AI to support various phases of their cyber operations, including open-source research, script modification, troubleshooting system configurations, and development of tools for password brute forcing and social media automation.
+
+A third example OpenAI found was a China-origin influence operation that generated polarised social media content supporting both sides of divisive topics within US political discourse, including text and AI-generated profile images.
+
+China's foreign ministry did not immediately respond to a Reuters request for comment on OpenAI's findings.
+
+OpenAI has cemented its position as one of the world's most valuable private companies after announcing a US$40 billion (RM169.3 billion) funding round valuing the company at US$300 billion.
+
+Uploaded by Magessan Varatharaja
