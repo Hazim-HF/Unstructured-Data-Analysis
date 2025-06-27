@@ -597,3 +597,161 @@ mysentiment<-function(m)
   sentiment_score
 }
 ```
+
+# Extra Example / Exercise
+
+```{r}
+knitr::opts_knit$set(root.dir = "D:/01. Education/02. Master/Semester 2/Unstructured-Data-Analysis/04. Text Data Analysis/TextMining")
+
+getwd()
+```
+
+```{r}
+setwd("D:/01. Education/02. Master/Semester 2/Unstructured-Data-Analysis/04. Text Data Analysis/TextMining")
+
+getwd()
+```
+
+```{r}
+getwd()
+```
+
+```{r}
+# load text mining library
+library(tm)
+getwd()
+```
+
+```{r}
+setwd("D:/01. Education/02. Master/Semester 2/Unstructured-Data-Analysis/04. Text Data Analysis/TextMining")
+
+filenames = list.files(getwd(), pattern = "*.txt")
+files = lapply(filenames, readLines, encoding = "latin1", warn = FALSE)
+list.files()
+```
+
+```{r}
+docs = VCorpus(VectorSource(files))
+inspect(docs[[1]])
+```
+
+```{r}
+toSpace <- content_transformer(function(x, pattern) { 
+  return (gsub(pattern, " " , x))
+  })
+
+toSpaceUnicode <- content_transformer(function(x) gsub("[\u2012\u2013\u2014\u2015-]", " ", x))
+
+docs_clean <- docs %>%
+  tm_map(content_transformer(tolower)) %>%
+  tm_map(toSpaceUnicode) %>%
+  tm_map(removeNumbers) %>%
+  tm_map(toSpace, "\\.") %>%
+  tm_map(removePunctuation) %>%
+  tm_map(removeWords, stopwords("english")) %>%
+  tm_map(stripWhitespace)
+
+
+inspect(docs_clean[[2]])
+```
+
+```{r}
+writeLines(as.character(docs[[1]]))
+```
+
+## Sentiment
+
+```{r}
+library(tidytext)
+library(textdata)
+library(tidyverse)
+library(syuzhet)
+library(tm)
+```
+
+```{r}
+get_sentiments("afinn")
+```
+
+```{r}
+get_sentiments("bing")
+```
+
+```{r}
+get_sentiments("nrc")
+```
+
+```{r}
+text = readLines('04. Text Data Analysis/TeamHealthRawData.txt')
+
+syuzhet_vector = get_sentiment(text, method = 'syuzhet')
+
+bing_vector = get_sentiment(text, method = 'bing')
+
+afinn = get_sentiment(text, method = 'afinn')
+```
+
+```{r}
+library(tidyverse)
+
+df <- data.frame(
+  index = 1:length(syuzhet_vector),
+  syuzhet = syuzhet_vector,
+  bing = bing_vector,
+  afinn = afinn_vector
+)
+
+df_long <- df %>%
+  pivot_longer(cols = -index, names_to = "method", values_to = "sentiment")
+
+ggplot(df_long, aes(x = index, y = sentiment, color = method)) +
+  geom_line() +
+  labs(title = "Sentiment Score Comparison", x = "Text Index", y = "Sentiment Score")
+
+```
+
+```{r}
+ggplot(df_long, aes(x = method, y = sentiment, fill = method)) +
+  geom_boxplot() +
+  labs(title = "Distribution of Sentiment Scores")
+```
+
+```{r}
+df_summary <- df_long %>%
+  group_by(method) %>%
+  summarise(mean_sentiment = mean(sentiment))
+
+ggplot(df_summary, aes(x = method, y = mean_sentiment, fill = method)) +
+  geom_col() +
+  labs(title = "Average Sentiment Score by Method")
+
+```
+
+```{r}
+df_polarity <- data.frame(
+  method = rep(c("syuzhet", "bing", "afinn"), each = length(text)),
+  sentiment = c(syuzhet_vector, bing_vector, afinn_vector)
+)
+
+df_polarity$polarity <- ifelse(df_polarity$sentiment > 0, "Positive",
+                         ifelse(df_polarity$sentiment < 0, "Negative", "Neutral"))
+
+library(dplyr)
+
+df_summary <- df_polarity %>%
+  group_by(method, polarity) %>%
+  summarise(count = n(), .groups = "drop")
+
+library(ggplot2)
+
+ggplot(df_summary, aes(x = method, y = count, fill = polarity)) +
+  geom_col(position = "dodge") +
+  labs(title = "Sentiment Polarity Comparison by Method",
+       x = "Method", y = "Count of Texts") +
+  scale_fill_manual(values = c("Positive" = "green", "Negative" = "red", "Neutral" = "gray"))
+
+```
+
+```{r emotion}
+nrc_vector = get_nrc_sentiment(text)
+```

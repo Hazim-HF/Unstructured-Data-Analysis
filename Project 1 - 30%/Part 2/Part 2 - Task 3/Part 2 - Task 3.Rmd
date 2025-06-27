@@ -10,48 +10,77 @@ library(syuzhet)
 ```
 
 ```{r}
-reviews = read_csv('food/Reviews.csv')
+text = readLines('Data/Reviews.csv')
 
-text = reviews$Text
+clean_text = tolower(gsub("[[:punct:]]", "", text))
 
-head(text)
+syuzhet_vector = get_sentiment(clean_text, method = 'syuzhet')
+
+bing_vector = get_sentiment(clean_text, method = 'bing')
+
+afinn_vector = get_sentiment(clean_text, method = 'afinn')
 ```
 
-```{r syuzhet}
-syuzhet_vector = get_sentiment(text, method = "syuzhet")
-head(syuzhet_vector)
-summary(syuzhet_vector)
+```{r}
+df = data.frame(
+  index = 1:length(syuzhet_vector),
+  syuzhet = syuzhet_vector,
+  bing = bing_vector,
+  afinn = afinn_vector
+)
+
+df_long = df %>%
+  pivot_longer(cols = -index, names_to = "method", values_to = "sentiment")
+
+ggplot(df_long, aes(x = index, y = sentiment, color = method)) +
+  geom_line() +
+  labs(title = "Sentiment Score Comparison", x = "Text Index", y = "Sentiment Score")
 ```
 
-```{r bing}
-bing_vector = get_sentiment(text, method = "bing")
-head(bing_vector)
-summary(bing_vector)
+```{r}
+ggplot(df_long, aes(x = method, y = sentiment, fill = method)) +
+  geom_boxplot() +
+  labs(title = "Distribution of Sentiment Scores")
 ```
 
-```{r afinn}
-afinn_vector = get_sentiment(text, method = "afinn")
-head(afinn_vector)
-summary(afinn_vector)
+```{r}
+df_summary = df_long %>%
+  group_by(method) %>%
+  summarise(mean_sentiment = mean(sentiment))
+
+ggplot(df_summary, aes(x = method, y = mean_sentiment, fill = method)) +
+  geom_col() +
+  labs(title = "Average Sentiment Score by Method")
 ```
 
 ```{r nrc}
-nrc_vector = get_sentiment(text, method = "nrc")
-head(nrc_vector)
-summary(nrc_vector)
-```
+df_polarity = data.frame(
+  method = rep(c("syuzhet", "bing", "afinn"), each = length(text)),
+  sentiment = c(syuzhet_vector, bing_vector, afinn_vector)
+)
 
-```{r comparison}
-rbind(sign(head(syuzhet_vector)),
-      sign(head(bing_vector)),
-      sign(head(afinn_vector)),
-      sign(head(nrc_vector)))
+df_polarity$polarity = ifelse(df_polarity$sentiment > 0, "Positive",
+                         ifelse(df_polarity$sentiment < 0, "Negative", "Neutral"))
+
+library(dplyr)
+
+df_summary = df_polarity %>%
+  group_by(method, polarity) %>%
+  summarise(count = n(), .groups = "drop")
+
+library(ggplot2)
+
+ggplot(df_summary, aes(x = method, y = count, fill = polarity)) +
+  geom_col(position = "dodge") +
+  labs(title = "Sentiment Polarity Comparison by Method",
+       x = "Method", y = "Count of Texts") +
+  scale_fill_manual(values = c("Positive" = "green", "Negative" = "red", "Neutral" = "gray"))
 ```
 
 # Sentiment Analysis
 
 ```{r}
-sentiment = get_nrc_sentiment(text)
+sentiment = get_nrc_sentiment(clean_text)
 head(sentiment)
 ```
 
@@ -65,15 +94,13 @@ df3 = df2[1:8,]
 ```
 
 ```{r}
-emotion_graph = quickplot(sentiment, 
-                           data=df3, 
-                           weight=count, 
-                           geom="bar", 
-                           fill=sentiment, 
-                           ylab="count") + 
+quickplot(sentiment, 
+          data=df3, 
+          weight=count, 
+          geom="bar", 
+          fill=sentiment, 
+          ylab="count") + 
   ggtitle("Survey Sentiments")
-
-ggsave("sentiment.png", plot = emotion_graph)
 ```
 
 ```{r}

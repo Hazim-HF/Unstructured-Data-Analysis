@@ -22,29 +22,38 @@ analysis = function(x){
   text = lapply(file.names, readLines)
   lyrics = text[[x]]
   
-  # custom additional stopwords
-  add_stopwords = c("chorus", "verse", "will", "tell", "just", "know", "see",
-                    "right", "now", "can", "ever", "say", "let", "ooh", "ill",
-                    "get", "like", "make", "back", "dip", "thats", "use", "keep", 
-                    "check")
-  
   # text cleaning
-  toSpace = content_transformer(function(x, pattern) gsub(pattern, " ", x))
-  docs = Corpus(VectorSource(lyrics))
-  docs = tm_map(docs, toSpace, "—")
-  docs = tm_map(docs, content_transformer(tolower))
-  docs = tm_map(docs, removeNumbers)
-  docs = tm_map(docs, removePunctuation)
-  docs = tm_map(docs, removeWords, stopwords("english"))
-  docs = tm_map(docs, removeWords, add_stopwords)
-  docs = tm_map(docs, stripWhitespace)
+  toSpace = content_transformer(function(x, pattern) {
+    return(gsub(pattern, " ", x))
+  })
+
+  toSpaceUnicode = content_transformer(function(x) {
+    return(gsub("[\u2012\u2013\u2014\u2015-]", " ", x))
+           })
+  # custom stopwords
+  custom_stop = c(stopwords("english"), "said", "will", "company", "ill", 
+                  "chorus", "verse", "will", "tell", "just", "know", "see",
+                  "right", "now", "can", "ever", "say", "let", "ooh", "ill",
+                  "get", "like", "make", "back", "dip", "thats", "use", "keep", 
+                  "check")
+  
+	docs = Corpus(VectorSource(lyrics))
+
+  docs_clean = docs %>%
+    tm_map(content_transformer(tolower)) %>%
+    tm_map(toSpaceUnicode) %>%
+    tm_map(removeNumbers) %>%
+    tm_map(toSpace, "\\.") %>%
+    tm_map(removePunctuation) %>%
+    tm_map(removeWords, custom_stop) %>%
+    tm_map(stripWhitespace)
   
   # lemmatization
-  text_data = sapply(docs, as.character)
+  text_data = sapply(docs_clean, as.character)
   lemmatize_text =lemmatize_strings(text_data)
-  docs = Corpus(VectorSource(lemmatize_text))
+  docs.lem = Corpus(VectorSource(lemmatize_text))
   
-  dtm = DocumentTermMatrix(docs)
+  dtm = DocumentTermMatrix(docs.lem)
   
   freq = colSums(as.matrix(dtm))
   
@@ -53,32 +62,33 @@ analysis = function(x){
   df = df %>%
     arrange(desc(freq))
   
+  # visualize word cloud
   print(head(df, 5))
-  print(wordcloud2(df, shape = "star", size = 0.7, minSize = 0))
+  print(wordcloud2(df, shape = "star"))
 }
 ```
 
 ```{r}
-# output from Blue - Yung Kai lyrics
+# output from All too well - Taylor Swift lyrics
 analysis(1)
 ```
 
 ```{r}
-# output from Eminem - Rap God lyrics
+# output from Blue - Yung Kai lyrics
 analysis(2)
 ```
 
 ```{r}
-# output for Fool's Garden - Lemon Tree
+# output from Eminem - Rap God lyrics
 analysis(3)
 ```
 
 ```{r}
-# output from Maher Zain - For The Rest of My Life lyrics
+# output for Fool's Garden - Lemon Tree
 analysis(4)
 ```
 
 ```{r}
-# output from The Contracts - Twenty One Pilots lyrics
+# output from Maher Zain - For The Rest of My Life lyrics
 analysis(5)
 ```
