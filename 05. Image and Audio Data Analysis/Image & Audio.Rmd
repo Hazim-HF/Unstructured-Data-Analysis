@@ -1,0 +1,267 @@
+---
+title: "Untitled"
+author: "HAZIM FITRI"
+date: "2025-06-22"
+output: html_document
+---
+
+# Image Data Analysis
+
+Pixel (aka picture element in scientific term) has intensity.
+
+plane origin (0,0) start at top left instead of bottom left
+
+-   Binary images: black (0) and white (1) only
+
+<!-- -->
+
+-   Gray scale intensity (0, 255) lower darker (0), higher lighter/brighter(255).
+
+-   Color image: combination of each **Red**, **Green**, and **Blue** and their intensity (0, 255)
+
+## Morphological Processing
+
+-   Dilated (+) pixel boundary
+
+-   Eroded (-) pixel boundary
+
+```{r}
+library(imager)
+
+file <- system.file('extdata/parrots.png',package='imager')
+parrots <- load.image(file)
+plot(parrots) #Parrots
+
+rose <- load.image("Rose.png") #Load image
+plot(rose) #Rose
+save.image(rose,"Rose.jpeg") #save image
+
+parrots.blurry <- isoblur(parrots,10) #Blurry parrots
+parrots.xedges <- deriche(parrots,2,order=2,axis="x") #Edge detector along x-axis
+parrots.yedges <- deriche(parrots,2,order=2,axis="y") #Edge detector along y-axis
+gray.parrots <- grayscale(parrots) #Make grayscale
+plot(gray.parrots)
+
+#Denoising
+birds <- load.image(system.file('extdata/Leonardo_Birds.jpg',package='imager'))
+birds.noisy <- (birds + .5*rnorm(prod(dim(birds))))
+layout(t(1:2))
+plot(birds.noisy,main="Original")
+isoblur(birds.noisy,5) %>% plot(main="Blurred")
+
+plot(birds.noisy,main="Original")
+blur_anisotropic(birds.noisy,ampl=1e3,sharp=.3) %>% plot(main="Blurred (anisotropic)")
+
+```
+
+```{r}
+#Resize, rotate, ext.
+thmb <- resize(parrots,round(width(parrots)/10),round(height(parrots)/10))
+plot(thmb,main="Thumbnail") #Pixellated parrots
+
+thmb <- resize(parrots,-10,-10)
+imrotate(parrots,30) %>% plot(main="Rotating") #Rotate
+imshift(parrots,40,20) %>% plot(main="Shifting") #Shift
+imshift(parrots,100,100,boundary=2) %>% plot(main="Shifting (circular)") #Shift circular
+
+#Histogram equalisations
+plot(boats)
+grayscale(boats) %>% hist(main="Luminance values in boats picture")
+R(boats) %>% hist(main="Red channel values in boats picture")
+
+library(ggplot2)
+library(dplyr)
+bdf <- as.data.frame(boats)
+head(bdf,3)
+bdf <- mutate(bdf,channel=factor(cc,labels=c('R','G','B')))
+ggplot(bdf,aes(value,col=channel))+geom_histogram(bins=30)+facet_wrap(~ channel)
+
+```
+
+```{r}
+#Normalizing
+x <- rnorm(100)
+layout(t(1:2))
+hist(x,main="Histogram of x")
+f <- ecdf(x)
+hist(f(x),main="Histogram of ecdf(x)")
+
+boats.g <- grayscale(boats)
+f <- ecdf(boats.g)
+plot(f,main="Empirical CDF of luminance values")
+f(boats.g) %>% hist(main="Transformed luminance values")
+f(boats.g) %>% str
+f(boats.g) %>% as.cimg(dim=dim(boats.g)) %>% plot(main="With histogram equalisation")
+
+#Morphological operations
+im <- load.example("birds")
+plot(im)
+
+im.g <- grayscale(im)
+plot(im.g)
+
+layout(t(1:3))
+threshold(im.g,"20%") %>% plot
+threshold(im.g,"15%") %>% plot
+threshold(im.g,"10%") %>% plot
+
+```
+
+# Audio Data Analysis
+
+## Fourier Transform and Spectogram
+
+-   Pitching = frequency (kenyaringan suara)
+
+-   volume = amplitude (kekuatan suara)
+
+-   
+
+```{r}
+library(tuneR)
+library(seewave)
+
+sr = 8000  # sampling rate
+t = seq(0, 2, 1/sr)  # time vector for 2 seconds
+y = (2^15 - 1) * sin(2 * pi * 440 * t)  # 440 Hz sine wave
+
+y = as.integer(y)  # convert to 16-bit integers
+
+plot(y[1:500], type = "l")  # plot the wave
+
+w = Wave(left = y, samp.rate = sr, bit = 16)  # create Wave object
+play(w)  # play the sound
+```
+
+```{r}
+library(tuneR)
+library(seewave)
+
+# Let's make a sine wave and play it
+help(Wave)
+sr = 8000  # the sampling rate
+t = seq(0, 2, 1/sr)  # times in secs if sample for 2 seconds at 8KHz
+y = (2^15-1)*sin(2*pi*440*t)  # sine wave at 440 Hz scaled to fill out 16 bit range
+plot(y[1:500], type="l")
+w = Wave(y, samp.rate = sr, bit = 16)  # make the Wave representation
+#play(w)
+
+plot(y[1:500], type="l")
+y1 = (2^15-1)*sin(2*pi*220*t)
+w1 = Wave(y1, samp.rate = sr, bit = 16)
+#play(w1)
+
+# Compare w and w1
+par(mfrow=c(2,1))  # layout parallel
+plot(y[1:500], type="l")
+plot(y1[1:500], type="l")
+
+# Compare in 1 layout (make redundant graph for easier comparison)
+par(mfrow=c(1,1))
+plot(y[1:500], type="l")  # plot y above
+lines(y1[1:500], lty=3, col="red")  # plot y1 in plot y
+
+# Try create another
+wsum = normalize(w+w1, unit='16')  # must normalize to make it also 16hz
+play(wsum)
+plot((y+y1)[1:500], type="l")  # plot from 1 to 500
+
+w3 <- normalize(bind(w, w1, wsum), unit='16')
+play(w3)
+
+y3 <- c(y, y1, y+y1)
+plot(y3, type="l")
+
+# The above to create manually. Next we will use the function in tuneR
+# Other types of waveforms
+?sine
+Au1 <- sine(500, duration=100000)  # 100=freq, duration 100000 = ~2.2s
+play(Au1)
+writeWave(Au1, 'Audio1.wav')  # save data
+Au11 <- readWave('Audio1.wav')  # read the audio
+
+Au2 <- noise(duration = 100000)  # look noise function from ?sine
+play(Au2)  # seems sound broken like TV/radio
+Au2 <- noise(kind='pink', duration = 100000)  # change to pink noise (correlated noise)
+play(Au2)
+
+Au3 <- pulse(220, duration = 100000)
+play(Au3)
+
+# Plot 3 signals above
+par(mfrow=c(3,1))
+plot(Au1[1:1000])  # The first 1000 signal for Au1
+plot(Au2[1:1000])
+plot(Au3[1:1000])
+
+# Other signals in ?sine
+Au4 <- sawtooth(100, duration = 100000)
+play(Au4)
+plot(Au4[1:1000])
+plot(Au4[1:2000])
+
+Au5 <- square(200, duration = 100000)
+play(Au5)
+plot(Au5[1:2000])
+
+# Combine all Au1 to Au5
+Asum = normalize(bind(Au1, Au2, Au3, Au4, Au5), unit='32')
+play(Asum)
+
+Au6 = normalize(bind(Au1 + Au2), unit='32')
+play(Au6)
+
+```
+
+```{r}
+# data tico from notes seewave
+data(tico)
+par(mfrow=c(1,1))
+timer(tico, f=22050, threshold=5, msmooth=c(50,0))  # if is freq, msmooth to smooth the line
+?timer
+timer(tico, f=22050, threshold=5, msmooth=c(100,0))
+
+sr = 8000
+t = seq(0, 2, 1/sr)
+y = (2^15-1)*sin(2*pi*440*t)
+plot(y[1:500], type="l")
+spectrum(y) # spectrum(y, span=20, log=c("no"))
+
+plot.frequency.spectrum <- function(X.k, xlimits=c(0,length(X.k))) {
+  plot.data <- cbind(0:(length(X.k)-1), Mod(X.k))
+
+  # TODO: why this scaling is necessary?
+  plot.data[2:length(X.k),2] <- 2*plot.data[2:length(X.k),2]
+
+  plot(plot.data, t="h", lwd=2, main="",
+       xlab="Frequency (Hz)", ylab="Strength",
+       xlim=xlimits, ylim=c(0,max(Mod(plot.data[,2]))))
+}
+```
+
+```{r}
+Yk <- fft(y)
+plot.frequency.spectrum(Yk)
+plot.frequency.spectrum(Yk[1:5000])  # look roughly where the signal is
+plot.frequency.spectrum(Yk[1:1000])  # around 800+
+
+data(tico)
+Ticok <- fft(tico@left)  # audio file have left channel and right channel, so we want only left channel
+plot.frequency.spectrum(Ticok[1:(length(Ticok)/2)])  # mirror, focus only one side
+
+library(rpanel)
+dynspec(tico, wl=1024, osc=T)  # function seewave, ocs = T (time)
+spectro(tico)  # give spectrogram
+meanspec(tico)  # obtain average for the whole time length
+
+z = readWave("babycry.wav")
+play(z)
+timer(z, f=22050, threshold=5, msmooth=c(100,0))
+Zk <- fft(z@left)
+plot.frequency.spectrum(Zk)
+plot.frequency.spectrum(Zk[1:20000])
+dynspec(z, wl=1024, osc=T)  # function seewave
+spectro(z)  # give spectrogram
+meanspec(z)  # obtain average for the whole time length
+
+```

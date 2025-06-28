@@ -1,0 +1,129 @@
+---
+title: "Untitled"
+output: 
+  pdf_document:
+    toc: true
+    toc_depth: 6
+---
+
+```{r}
+getwd()
+```
+
+```{r}
+library(imager)
+```
+
+## 1. Data Acquisition
+
+```{r}
+flower_c = load.image('Data/Flower_colour.jpg')
+plot(flower_c)
+```
+
+```{r}
+flower_g = load.image('Data/Flower_grayscale.jpg')
+plot(flower_g)
+```
+
+```{r}
+scenery_c = load.image('Data/Scenery_colour.jpg')
+plot(scenery_c)
+```
+
+```{r}
+scenery_g = load.image('Data/Scenery_grayscale.jpeg')
+plot(scenery_g)
+```
+
+```{r}
+person_c = load.image('Data/Person_colour.jpg')
+plot(person_c)
+```
+
+```{r}
+person_g = load.image('Data/Person_grayscale.jpg')
+plot(person_g)
+```
+
+```{r}
+building_c = load.image('Data/Building_colour.jpeg')
+plot(building_c)
+```
+
+```{r}
+building_g = load.image('data/Building_grayscale.jpeg')
+plot(building_g)
+```
+
+## 2. Image Analysis
+
+### Edge Detection
+
+```{r}
+
+```
+
+### Splitting & Concatenating Image
+
+```{r}
+
+```
+
+### Image Transformation
+
+resizing, rotation, scaling & cropping
+
+```{r}
+
+```
+
+### Filtering Image
+
+```{r}
+
+```
+
+### Rectangular, Circular and Fuzzy Selection
+
+```{r}
+
+```
+
+### Blurry & Sharpen
+
+```{r}
+
+```
+
+### Segmentation
+
+```{r}
+
+```
+
+### Histogram Equalization
+
+```{r}
+
+```
+
+### Morphological Operations
+
+```{r}
+
+```
+
+## 3. Noise Image
+
+### Image Denoising
+
+```{r}
+
+```
+
+### Morphological Operations
+
+```{r}
+
+```

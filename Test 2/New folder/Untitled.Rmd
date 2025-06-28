@@ -1,0 +1,32 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r}
+library(tuneR)
+library(seewave)
+library(rpanel)
+```
+
+```{r}
+audio = readWave("audio.wav")
+play(audio)
+```
+
+```{r}
+timer(audio, f=8000, threshold=5, msmooth=c(100,0))
+
+result.timer <- timer(audio, f=8000, threshold=5, msmooth=c(100,0))
+
+segment.df <- data.frame(start = result.timer$s.start,
+                         end = result.timer$s.end)
+```
+
+```{r b_spectro}
+spectro(audio)
+```
+
+```{r}
+Y_audio <- fft(audio_b)
+```
