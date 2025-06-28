@@ -28,42 +28,69 @@ plane origin (0,0) start at top left instead of bottom left
 ```{r}
 library(imager)
 
-file <- system.file('extdata/parrots.png',package='imager')
-parrots <- load.image(file)
-plot(parrots) #Parrots
-
-rose <- load.image("Rose.png") #Load image
-plot(rose) #Rose
-save.image(rose,"Rose.jpeg") #save image
-
-parrots.blurry <- isoblur(parrots,10) #Blurry parrots
-parrots.xedges <- deriche(parrots,2,order=2,axis="x") #Edge detector along x-axis
-parrots.yedges <- deriche(parrots,2,order=2,axis="y") #Edge detector along y-axis
-gray.parrots <- grayscale(parrots) #Make grayscale
-plot(gray.parrots)
-
-#Denoising
-birds <- load.image(system.file('extdata/Leonardo_Birds.jpg',package='imager'))
-birds.noisy <- (birds + .5*rnorm(prod(dim(birds))))
-layout(t(1:2))
-plot(birds.noisy,main="Original")
-isoblur(birds.noisy,5) %>% plot(main="Blurred")
-
-plot(birds.noisy,main="Original")
-blur_anisotropic(birds.noisy,ampl=1e3,sharp=.3) %>% plot(main="Blurred (anisotropic)")
-
+file = system.file('extdata/parrots.png',package='imager')
+parrots = load.image(file)
+plot(parrots)
 ```
 
 ```{r}
-#Resize, rotate, ext.
-thmb <- resize(parrots,round(width(parrots)/10),round(height(parrots)/10))
-plot(thmb,main="Thumbnail") #Pixellated parrots
+par(mfrow=c(2,2))
+parrots.blurry = isoblur(parrots,10) #Blurry parrots
+parrots.xedges = deriche(parrots,2,order=2,axis="x") #Edge detector along x-axis
+parrots.yedges = deriche(parrots,2,order=2,axis="y") #Edge detector along y-axis
+gray.parrots = grayscale(parrots) #Make grayscale
+plot(parrots.blurry)
+plot(parrots.xedges)
+plot(parrots.yedges)
+plot(gray.parrots)
+```
 
-thmb <- resize(parrots,-10,-10)
+```{r}
+rose <- load.image("Rose.png") #Load image
+save.image(rose,"Rose.jpeg") #save image
+plot(rose) #Rose
+```
+
+```{r denoising}
+# Denoising
+# create a noise image
+par(mfrow=c(1,2))
+birds = load.image(system.file('extdata/Leonardo_Birds.jpg',package='imager'))
+birds.noisy = (birds + .5 * rnorm(prod(dim(birds))))
+plot(birds)
+plot(birds.noisy)
+```
+
+```{r}
+layout(t(1:2))
+plot(birds.noisy,main="Original")
+isoblur(birds.noisy,5) %>% 
+  plot(main="Blurred")
+```
+
+```{r}
+plot(birds.noisy,main="Original")
+blur_anisotropic(birds.noisy,ampl=1e3,sharp=.3) %>% 
+  plot(main="Blurred (anisotropic)")
+```
+
+```{r}
+ #Resize, rotate, ext.
+thmb = resize(parrots,round(width(parrots)/10),round(height(parrots)/10))
+plot(thmb,main="Thumbnail") # Pixellated parrots
+```
+
+### Image Transformation
+
+```{r}
+par(mfrow = c(2, 2))
+resize(parrots,-10,-10) %>% plot(main = 'Resize (smaller)')
 imrotate(parrots,30) %>% plot(main="Rotating") #Rotate
 imshift(parrots,40,20) %>% plot(main="Shifting") #Shift
 imshift(parrots,100,100,boundary=2) %>% plot(main="Shifting (circular)") #Shift circular
+```
 
+```{r}
 #Histogram equalisations
 plot(boats)
 grayscale(boats) %>% hist(main="Luminance values in boats picture")
@@ -107,6 +134,13 @@ threshold(im.g,"10%") %>% plot
 
 ```
 
+### Splitting and concatenating images
+
+```{r}
+imsplit(parrots, "x", 4) %>% plot
+
+```
+
 # Audio Data Analysis
 
 ## Fourier Transform and Spectogram
@@ -130,7 +164,7 @@ y = as.integer(y)  # convert to 16-bit integers
 plot(y[1:500], type = "l")  # plot the wave
 
 w = Wave(left = y, samp.rate = sr, bit = 16)  # create Wave object
-play(w)  # play the sound
+# play(w)  # play the sound
 ```
 
 ```{r}
@@ -174,7 +208,6 @@ plot(y3, type="l")
 
 # The above to create manually. Next we will use the function in tuneR
 # Other types of waveforms
-?sine
 Au1 <- sine(500, duration=100000)  # 100=freq, duration 100000 = ~2.2s
 play(Au1)
 writeWave(Au1, 'Audio1.wav')  # save data
@@ -214,19 +247,17 @@ play(Au6)
 ```
 
 ```{r}
-# data tico from notes seewave
-data(tico)
-par(mfrow=c(1,1))
-timer(tico, f=22050, threshold=5, msmooth=c(50,0))  # if is freq, msmooth to smooth the line
-?timer
-timer(tico, f=22050, threshold=5, msmooth=c(100,0))
-
 sr = 8000
 t = seq(0, 2, 1/sr)
 y = (2^15-1)*sin(2*pi*440*t)
 plot(y[1:500], type="l")
-spectrum(y) # spectrum(y, span=20, log=c("no"))
+```
 
+```{r}
+spectrum(y) # spectrum(y, span=20, log=c("no"))
+```
+
+```{r plot_frequency_spectrum}
 plot.frequency.spectrum <- function(X.k, xlimits=c(0,length(X.k))) {
   plot.data <- cbind(0:(length(X.k)-1), Mod(X.k))
 
@@ -240,28 +271,82 @@ plot.frequency.spectrum <- function(X.k, xlimits=c(0,length(X.k))) {
 ```
 
 ```{r}
+par(mfrow=c(1,3))
 Yk <- fft(y)
 plot.frequency.spectrum(Yk)
 plot.frequency.spectrum(Yk[1:5000])  # look roughly where the signal is
 plot.frequency.spectrum(Yk[1:1000])  # around 800+
+```
 
+### Tico bird
+
+```{r}
+# data tico from notes seewave
 data(tico)
-Ticok <- fft(tico@left)  # audio file have left channel and right channel, so we want only left channel
+# play(tico)
+par(mfrow=c(1,2))
+timer(tico, f=22050, threshold=5, msmooth=c(50,0))  # f is freq, msmooth to smooth the line
+timer(tico, f=22050, threshold=5, msmooth=c(100,0))
+```
+
+```{r}
+plot(tico)
+spectrum(tico)
+```
+
+```{r}
+# audio file have left channel and right channel, so we want only left channel
+Ticok = fft(tico@left)  
 plot.frequency.spectrum(Ticok[1:(length(Ticok)/2)])  # mirror, focus only one side
+```
 
-library(rpanel)
+```{r}
 dynspec(tico, wl=1024, osc=T)  # function seewave, ocs = T (time)
-spectro(tico)  # give spectrogram
-meanspec(tico)  # obtain average for the whole time length
+```
 
+```{r}
+spectro(tico)  # give spectrogram
+```
+
+```{r}
+meanspec(tico)  # obtain average for the whole time length
+```
+
+### Baby cry
+
+```{r}
 z = readWave("babycry.wav")
 play(z)
 timer(z, f=22050, threshold=5, msmooth=c(100,0))
+```
+
+```{r}
+plot(z)
+```
+
+```{r}
+spectrum(z)
+```
+
+```{r}
+par(mfrow=c(1,2))
 Zk <- fft(z@left)
 plot.frequency.spectrum(Zk)
 plot.frequency.spectrum(Zk[1:20000])
+```
+
+```{r}
 dynspec(z, wl=1024, osc=T)  # function seewave
+```
+
+```{r spectrogram}
 spectro(z)  # give spectrogram
+```
+
+```{r}
 meanspec(z)  # obtain average for the whole time length
+```
+
+```{r}
 
 ```

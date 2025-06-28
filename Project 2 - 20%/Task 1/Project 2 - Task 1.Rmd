@@ -1,14 +1,12 @@
 ---
 title: "Untitled"
+author: "Hazim Fitri P152419"
+date: "`r Sys.Date()`"
 output: 
   pdf_document:
     toc: true
     toc_depth: 6
 ---
-
-```{r}
-getwd()
-```
 
 ```{r}
 library(imager)
@@ -17,57 +15,106 @@ library(imager)
 ## 1. Data Acquisition
 
 ```{r}
-flower_c = load.image('Data/Flower_colour.jpg')
-plot(flower_c)
+Flower1 = load.image('Data/Flower_colour.jpg')
+plot(Flower1)
 ```
 
 ```{r}
-flower_g = load.image('Data/Flower_grayscale.jpg')
-plot(flower_g)
+Flower2 = load.image('Data/Flower_grayscale.jpg')
+plot(Flower2)
 ```
 
 ```{r}
-scenery_c = load.image('Data/Scenery_colour.jpg')
-plot(scenery_c)
+Scenery1 = load.image('Data/Scenery_colour.jpg')
+plot(Scenery1)
 ```
 
 ```{r}
-scenery_g = load.image('Data/Scenery_grayscale.jpeg')
-plot(scenery_g)
+Scenery2 = load.image('Data/Scenery_grayscale.jpeg')
+plot(Scenery2)
 ```
 
 ```{r}
-person_c = load.image('Data/Person_colour.jpg')
-plot(person_c)
+Person1 = load.image('Data/Person_colour.jpg')
+plot(Person1)
 ```
 
 ```{r}
-person_g = load.image('Data/Person_grayscale.jpg')
-plot(person_g)
+Person2 = load.image('Data/Person_grayscale.jpg')
+plot(Person2)
 ```
 
 ```{r}
-building_c = load.image('Data/Building_colour.jpeg')
-plot(building_c)
+Building1 = load.image('Data/Building_colour.jpeg')
+plot(Building1)
 ```
 
 ```{r}
-building_g = load.image('data/Building_grayscale.jpeg')
-plot(building_g)
+Building2 = load.image('data/Building_grayscale.jpeg')
+plot(Building2)
 ```
 
 ## 2. Image Analysis
 
 ### Edge Detection
 
+```{r edge_detection}
+#Edge detector along x-axis
+plot(deriche(Flower1,2,order=2,axis="x"))
+plot(deriche(Flower2,2,order=2,axis="x"))
+plot(deriche(Scenery1,2,order=2,axis="x"))
+plot(deriche(Scenery2,2,order=2,axis="x"))
+plot(deriche(Person1,2,order=2,axis="x"))
+plot(deriche(Person2,2,order=2,axis="x"))
+plot(deriche(Building1,2,order=2,axis="x"))
+plot(deriche(Building2,2,order=2,axis="x"))
+```
+
 ```{r}
+#Edge detector along y-axis
+plot(deriche(Flower1,2,order=2,axis="y"))
+plot(deriche(Flower2,2,order=2,axis="y"))
+plot(deriche(Scenery1,2,order=2,axis="y"))
+plot(deriche(Scenery2,2,order=2,axis="y"))
+plot(deriche(Person1,2,order=2,axis="y"))
+plot(deriche(Person2,2,order=2,axis="y"))
+plot(deriche(Building1,2,order=2,axis="y"))
+plot(deriche(Building2,2,order=2,axis="y"))
 
 ```
 
 ### Splitting & Concatenating Image
 
 ```{r}
+imsplit(Flower1, "x", 4) %>% plot
+```
 
+```{r}
+imsplit(Flower2, "x", 4) %>% plot
+```
+
+```{r}
+imsplit(parrots, "x", 4) %>% plot
+```
+
+```{r}
+imsplit(parrots, "x", 4) %>% plot
+```
+
+```{r}
+imsplit(parrots, "x", 4) %>% plot
+```
+
+```{r}
+imsplit(parrots, "x", 4) %>% plot
+```
+
+```{r}
+imsplit(parrots, "x", 4) %>% plot
+```
+
+```{r}
+imsplit(parrots, "x", 4) %>% plot
 ```
 
 ### Image Transformation
@@ -75,7 +122,11 @@ plot(building_g)
 resizing, rotation, scaling & cropping
 
 ```{r}
-
+par(mfrow = c(2, 2))
+resize(parrots,-10,-10) %>% plot(main = 'Resize (smaller)')
+imrotate(parrots,30) %>% plot(main="Rotating") #Rotate
+imshift(parrots,40,20) %>% plot(main="Shifting") #Shift
+imshift(parrots,100,100,boundary=2) %>% plot(main="Shifting (circular)") #Shift circular
 ```
 
 ### Filtering Image

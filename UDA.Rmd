@@ -557,6 +557,43 @@ plot(cost_df$cluster, cost_df$cost)
 lines(cost_df$cluster, cost_df$cost)
 ```
 
+# Image Data Analysis
+
+```{r}
+
+```
+
+# Audio Data Analysis
+
+```{r}
+plot.frequency.spectrum = function(X.k, xlimits=c(0,length(X.k))) {
+  plot.data = cbind(0:(length(X.k)-1), Mod(X.k))
+
+  # TODO: why this scaling is necessary?
+  plot.data[2:length(X.k),2] <- 2*plot.data[2:length(X.k),2]
+
+  plot(plot.data, t="h", lwd=2, main="",
+       xlab="Frequency (Hz)", ylab="Strength",
+       xlim=xlimits, ylim=c(0,max(Mod(plot.data[,2]))))
+}
+```
+
+```{r}
+baby = readWave("05. Image and Audio Data Analysis/babycry.wav")
+timer(baby, f = 22050, threshold = 5, msmooth = c(100,0))
+```
+
+```{r}
+zk = fft(baby@left)
+par(mfrow=c(1,2))
+plot.frequency.spectrum(zk)
+plot.frequency.spectrum(zk[1:20000])
+```
+
+```{r}
+
+```
+
 ## Sentiment Analysis
 
 ```{r data_prepping}
