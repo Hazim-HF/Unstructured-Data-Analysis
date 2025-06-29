@@ -316,16 +316,12 @@ meanspec(tico)  # obtain average for the whole time length
 
 ```{r}
 z = readWave("babycry.wav")
-play(z)
-timer(z, f=22050, threshold=5, msmooth=c(100,0))
+# play(z)
+timer(z, f=22050, threshold=30, msmooth=c(300,0))
 ```
 
 ```{r}
 plot(z)
-```
-
-```{r}
-spectrum(z)
 ```
 
 ```{r}

@@ -11,16 +11,11 @@ library(rpanel)
 
 ```{r}
 audio = readWave("audio.wav")
-play(audio)
+str(audio)
 ```
 
 ```{r}
-timer(audio, f=8000, threshold=5, msmooth=c(100,0))
-
-result.timer <- timer(audio, f=8000, threshold=5, msmooth=c(100,0))
-
-segment.df <- data.frame(start = result.timer$s.start,
-                         end = result.timer$s.end)
+timer(audio, f=audio@samp.rate, threshold=20, msmooth=c(200,0))
 ```
 
 ```{r b_spectro}
@@ -28,5 +23,18 @@ spectro(audio)
 ```
 
 ```{r}
-Y_audio <- fft(audio_b)
+plot.frequency.spectrum <- function(X.k, xlimits=c(0,length(X.k))) {
+  plot.data <- cbind(0:(length(X.k)-1), Mod(X.k))
+
+  # TODO: why this scaling is necessary?
+  plot.data[2:length(X.k),2] <- 2*plot.data[2:length(X.k),2]
+
+  plot(plot.data, t="h", lwd=2, main="",
+       xlab="Frequency (Hz)", ylab="Strength",
+       xlim=xlimits, ylim=c(0,max(Mod(plot.data[,2]))))
+}
+
+plot.frequency.spectrum(fft(audio@left))
 ```
+
+The figure above illustrates the strength of each frequency in the audio. We can see that that audio signals exhibits significant energy in both low (0 - 6 kHz) and high (30 - 40 kHz) frequency bands, with less activity in the mid-frequency range.
