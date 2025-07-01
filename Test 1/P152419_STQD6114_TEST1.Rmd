@@ -1,0 +1,133 @@
+---
+title: "Test 1 STQD6114"
+author: "Hazim Fitri P152419"
+date: "2025-05-04"
+output: pdf_document
+---
+
+```{r}
+setwd('C:/Users/PC 13/Downloads')
+```
+
+# Question 4
+
+## a) Words with '!'
+
+```{r}
+# read LittelMonkeys.csv file
+monkey = readLines('LittleMonkeys.csv')
+
+library(stringr)
+
+# find '!' in the data
+str_view(monkey, '!')
+```
+
+## b) Words contain 
+
+```{r}
+# find words with a same pair of letter next to each other
+str_view(monkey,"(.)\\1")
+```
+
+## c) Words contain vowels next to each other
+
+```{r}
+# find words with a pair of vowels next to each other
+str_view(monkey,"(a|e|i|o|u){2}")
+```
+
+## d) pattern 'mon'
+
+```{r}
+# identify the location of word 'mon'
+loc = grepl(pattern='mon', x=monkey)
+
+# extract words with word 'mon'
+monkey[loc]
+```
+
+## e) Word 'monkey'
+
+```{r}
+# count the word 'monkey'
+sum(grepl(pattern='monkey', x=monkey))
+```
+
+# Question 5
+
+## a) Data Cleaning
+
+```{r}
+# read BBCnews.txt file
+bbc = readLines('BBCnews.txt')
+
+library(tm)
+bbc = Corpus(VectorSource(bbc))
+
+tospace = content_transformer(function(x, pattern)
+  {return(gsub(pattern, " ", x))})
+
+# remove '-'
+bbc2 = tm_map(bbc, tospace, '-')
+
+# remove numbers
+bbc3 = tm_map(bbc2, removeNumbers)
+
+# remove punctuation
+bbc4 = tm_map(bbc3, removePunctuation)
+
+# convert all letters to lower case
+bbc5 = tm_map(bbc4, content_transformer(tolower))
+
+# remove all english stopwords
+bbc6 = tm_map(bbc5, removeWords, stopwords('english'))
+
+# remove white space
+bbc7 = tm_map(bbc6, stripWhitespace)
+```
+
+## b) Lemmatization
+
+```{r}
+# lemmatize strings
+lem = lemmatize_strings(bbc7)
+```
+
+## c) 
+
+```{r}
+# convert to Term Document Matrix
+dtm = as.matrix(TermDocumentMatrix(bbc7))
+v = sort(rowSums(dtm), decreasing=T)
+
+# convert matrix into data frame
+df = data.frame(word=names(v), freq=v)
+
+# filter only word with frequency greater than 5
+sub = subset(df, freq > 5)
+
+findFreqTerms(TermDocumentMatrix(bbc7), lowfreq=5)
+```
+
+## d) wordcloud & barchart
+
+```{r}
+library(wordcloud2)
+wordcloud2(sub, size = 0.4)
+```
+
+```{r}
+# plot a bar chart to 
+library(ggplot2)
+ggplot(sub, aes(x=word, y=freq)) +
+  geom_bar(stat='identity') + 
+  theme(axis.text.x=element_text(angle=90, hjust=1))
+```
+
+## e) Associate with 'coast'
+
+```{r}
+# find word that associated with 'coast' with at least a correlation of 0.3
+findAssocs(TermDocumentMatrix(bbc7), 'coast', 0.3)
+```

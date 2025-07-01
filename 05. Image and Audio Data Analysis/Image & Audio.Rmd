@@ -57,8 +57,8 @@ plot(rose) #Rose
 par(mfrow=c(1,2))
 birds = load.image(system.file('extdata/Leonardo_Birds.jpg',package='imager'))
 birds.noisy = (birds + .5 * rnorm(prod(dim(birds))))
-plot(birds)
-plot(birds.noisy)
+plot(birds, main = 'Original')
+plot(birds.noisy, main = 'Noised Image')
 ```
 
 ```{r}
@@ -69,9 +69,10 @@ isoblur(birds.noisy,5) %>%
 ```
 
 ```{r}
+layout(t(1:2))
 plot(birds.noisy,main="Original")
-blur_anisotropic(birds.noisy,ampl=1e3,sharp=.3) %>% 
-  plot(main="Blurred (anisotropic)")
+blur_anisotropic(birds.noisy, ampl=1e3, sharp=.3) %>% 
+plot(main="Blurred (anisotropic)")
 ```
 
 ```{r}
@@ -92,6 +93,7 @@ imshift(parrots,100,100,boundary=2) %>% plot(main="Shifting (circular)") #Shift 
 
 ```{r}
 #Histogram equalisations
+par(mfrow = c(2,2))
 plot(boats)
 grayscale(boats) %>% hist(main="Luminance values in boats picture")
 R(boats) %>% hist(main="Red channel values in boats picture")
@@ -99,27 +101,29 @@ R(boats) %>% hist(main="Red channel values in boats picture")
 library(ggplot2)
 library(dplyr)
 bdf <- as.data.frame(boats)
-head(bdf,3)
-bdf <- mutate(bdf,channel=factor(cc,labels=c('R','G','B')))
+bdf <- mutate(bdf, channel = factor(cc, labels = c('R','G','B')))
 ggplot(bdf,aes(value,col=channel))+geom_histogram(bins=30)+facet_wrap(~ channel)
-
 ```
 
 ```{r}
 #Normalizing
-x <- rnorm(100)
+x = rnorm(100)
 layout(t(1:2))
-hist(x,main="Histogram of x")
-f <- ecdf(x)
-hist(f(x),main="Histogram of ecdf(x)")
+hist(x, main = "Histogram of x")
+f = ecdf(x)
+hist(f(x), main = "Histogram of ecdf(x)")
 
-boats.g <- grayscale(boats)
-f <- ecdf(boats.g)
-plot(f,main="Empirical CDF of luminance values")
-f(boats.g) %>% hist(main="Transformed luminance values")
+boats.g = grayscale(boats)
+f = ecdf(boats.g)
+plot(f, main = "Empirical CDF of luminance values")
+f(boats.g) %>% hist(main = "Transformed luminance values")
 f(boats.g) %>% str
-f(boats.g) %>% as.cimg(dim=dim(boats.g)) %>% plot(main="With histogram equalisation")
+f(boats.g) %>% 
+  as.cimg(dim = dim(boats.g)) %>% 
+  plot(main = "With histogram equalisation")
+```
 
+```{r}
 #Morphological operations
 im <- load.example("birds")
 plot(im)
@@ -139,6 +143,11 @@ threshold(im.g,"10%") %>% plot
 ```{r}
 imsplit(parrots, "x", 4) %>% plot
 
+```
+
+```{r morphology}
+im = load.image(system.file('extdata/Leonardo_Birds.jpg',package='imager'))
+im %>% grayscale %>% plot
 ```
 
 # Audio Data Analysis

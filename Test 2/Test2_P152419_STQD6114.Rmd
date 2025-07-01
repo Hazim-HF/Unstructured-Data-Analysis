@@ -1,0 +1,59 @@
+---
+title: "Test 2 Unstructured Data Analytics STQD6114"
+author: "Hazim Fitri P152419"
+date: "2025-06-29"
+output: 
+  pdf_document:
+    toc: true
+    toc_depth: 6
+---
+
+# Loading Library
+
+```{r}
+library(seewave)
+library(tuneR)
+library(rpanel)
+```
+
+# Loading Data
+
+```{r}
+audio = readWave('Data/audio.wav')
+str(audio)
+```
+
+# Plot Audio using Timer Function
+
+```{r timer_plot}
+timer(audio, f=audio@samp.rate, threshold=25, msmooth=c(200,0), main = 'Temporal Segmentation of Audio on Amplitude Threshold')
+```
+
+The figure above illustrates the temporal segmentation of audio on amplitude threshold where the vertical axis (y-axis) is the amplitude and the horizontal axis (x-axis) is the time stamp of the audio in seconds. The threshold for this analysis has been set to 25% to focus on sound that give significant to our analysis and the line has been smooth using parameter of 200 to ensure that we did not capture any unnecessary sound while keeping the audio as close to original as possible. From the figure, we can see that for the first 0.41s, the audio does not have any significant sound. Any sound that has amplitude below the threshold can be considered as insignificant (e.g., human breath during speech) or background noise (e.g., chit-chat of customer at a cafe). Then, the sound shows a significant increase in amplitude three times with all three with a same duration of 0.07s and gap of 0.02s. Even though the three spike in amplitude has the same behaviour in terms of time, it does not have the same peak amplitude. The second spike has the greatest amplitude, followed by the first spike and the third spike has the lowest amplitude.
+
+# Spectrogram of Audio
+
+```{r spectrogram}
+spectro(audio, main = 'Spectrogram of Audio')
+```
+
+The above figure shows the spectrogram of audio.wav generated using `spectro()` function. This figure plot the frequency of the audio in kilo hertz (kHz) on the vertical axis and the time in seconds on the horizontal axis. The amplitude measured in decible (dB) also can be see by the color of the plot with red colour means highest amplitude followed by yellow, green, blue and lastly white. From it, we can say that it has a consistent output with earlier graph where from the 0s to 0.4s, there are no significant sound that can be analyzed. However, from 0.4s to 0.5s, it can be seen that the three peaks in amplitude before has two different frequency, with higher frequency (12kHz - 22kHz) showing lower amplitude compared to lower frequency (2kHz - 7kHz).
+
+# Frequency Spectrum of Fast Fourier Transform (FFT)
+
+```{r frequency_spectrum}
+# define plot for frequency spectrum analysis
+plot.frequency.spectrum <- function(X.k, xlimits=c(0,length(X.k))) {
+  plot.data <- cbind(0:(length(X.k)-1), Mod(X.k))
+
+  plot.data[2:length(X.k),2] <- 2*plot.data[2:length(X.k),2]
+
+  plot(plot.data, t="h", lwd=2, main="Frequency Spectrum of Fast Fourier Transform (FFT)",
+       xlab="Frequency (Hz)", ylab="Strength",
+       xlim=xlimits, ylim=c(0,max(Mod(plot.data[,2]))))
+}
+
+plot.frequency.spectrum(fft(audio@left))
+```
+
+The last output is the frequency spectrum of Fast Fourier Transform (FFT) of the audio's left channel. This graph shows the audio frequency on the horizontal axis and the strength (frequency of frequency) of the frequency on the vertical axis. From the first glance, we can say that this graph is more detailed and better in analyzing frequency than spectrogram as it can plot frequency of 39 kHz compared to 20kHz on the previous graph. Here, we can see that most of the sound's frequency are on the lower end (0kHz - 5kHz) and higher end (35kHz - 39kHz) with the peak at 5kHz and 35kHz respectively. Next, we can see the there to small peak on frequency of 12kHz - 18kHz and 22kHz - 28kHz. Lastly, the frequency with the lowest strength is on right at the middle of the frequency and it is on 20kHz. This output also consistent with the output generate from spectrogram where the colour appear on the higher and lower frequency and appear white on the middle frequency.

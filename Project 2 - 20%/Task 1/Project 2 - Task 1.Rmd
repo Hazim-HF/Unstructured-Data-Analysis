@@ -15,43 +15,41 @@ library(imager)
 ## 1. Data Acquisition
 
 ```{r}
-Flower1 = load.image('Data/Flower_colour.jpg')
-plot(Flower1)
+layout(t(1:2))
+Flower1 = load.image('Data/Flower1.jpg')
+plot(Flower1, main = 'Flower 1')
+
+Flower2 = load.image('Data/Flower2.jpg')
+plot(Flower2, main = 'Flower 2')
 ```
 
 ```{r}
-Flower2 = load.image('Data/Flower_grayscale.jpg')
-plot(Flower2)
+layout(t(1:2))
+Scenery1 = load.image('Data/Scenery1.jpg')
+plot(Scenery1, main = 'Scenery 1')
+
+Scenery2 = load.image('Data/Scenery2.jpg')
+plot(Scenery2, main = 'Scenery 2')
 ```
 
 ```{r}
-Scenery1 = load.image('Data/Scenery_colour.jpg')
-plot(Scenery1)
+layout(t(1:2))
+
+Person1 = load.image('Data/Person1.jpg')
+plot(Person1, main = 'Person 1')
+
+Person2 = load.image('Data/Person2.jpg')
+plot(Person2, main = 'Person 2')
 ```
 
 ```{r}
-Scenery2 = load.image('Data/Scenery_grayscale.jpeg')
-plot(Scenery2)
-```
+layout(t(1:2))
 
-```{r}
-Person1 = load.image('Data/Person_colour.jpg')
-plot(Person1)
-```
+Building1 = load.image('Data/Building1.jpg')
+plot(Building1, main = 'Building 1')
 
-```{r}
-Person2 = load.image('Data/Person_grayscale.jpg')
-plot(Person2)
-```
-
-```{r}
-Building1 = load.image('Data/Building_colour.jpeg')
-plot(Building1)
-```
-
-```{r}
-Building2 = load.image('data/Building_grayscale.jpeg')
-plot(Building2)
+Building2 = load.image('data/Building2.jpg')
+plot(Building2, main = 'Building 2')
 ```
 
 ## 2. Image Analysis
@@ -59,34 +57,73 @@ plot(Building2)
 ### Edge Detection
 
 ```{r edge_detection}
-#Edge detector along x-axis
-plot(deriche(Flower1,2,order=2,axis="x"))
-plot(deriche(Flower2,2,order=2,axis="x"))
-plot(deriche(Scenery1,2,order=2,axis="x"))
-plot(deriche(Scenery2,2,order=2,axis="x"))
-plot(deriche(Person1,2,order=2,axis="x"))
-plot(deriche(Person2,2,order=2,axis="x"))
-plot(deriche(Building1,2,order=2,axis="x"))
-plot(deriche(Building2,2,order=2,axis="x"))
+#Edge detector along x-axis and y-axis
+par(mfrow = c(2, 2))
+plot(deriche(Flower1, 2, order = 2, axis = "x"), 
+     main = 'X-axis detection for Flower 1 ')
+
+plot(deriche(Flower1, 2, order = 2, axis = "y"), 
+     main = 'Y-axis detection for Flower 1 ')
+
+plot(deriche(Flower2, 2, order = 2, axis = "x"), 
+     main = 'X-axis detection for Flower 2 ')
+
+plot(deriche(Flower2, 2, order = 2, axis = "y"), 
+     main = 'Y-axis detection for Flower 2 ')
 ```
 
 ```{r}
-#Edge detector along y-axis
-plot(deriche(Flower1,2,order=2,axis="y"))
-plot(deriche(Flower2,2,order=2,axis="y"))
-plot(deriche(Scenery1,2,order=2,axis="y"))
-plot(deriche(Scenery2,2,order=2,axis="y"))
-plot(deriche(Person1,2,order=2,axis="y"))
-plot(deriche(Person2,2,order=2,axis="y"))
-plot(deriche(Building1,2,order=2,axis="y"))
-plot(deriche(Building2,2,order=2,axis="y"))
+par(mfrow = c(2, 2))
 
+plot(deriche(Scenery1, 2, order = 2, axis = "x"), 
+     main = 'X-axis detection for Scenery 1 ')
+
+plot(deriche(Scenery1, 2, order = 2, axis = "y"), 
+     main = 'Y-axis detection for Scenery 1 ')
+
+plot(deriche(Scenery2, 2, order = 2, axis = "x"), 
+     main = 'X-axis detection for Scenery 2 ')
+
+plot(deriche(Scenery2, 2, order = 2, axis = "y"), 
+     main = 'Y-axis detection for Scenery 2 ')
+```
+
+```{r}
+par(mfrow = c(2, 2))
+
+plot(deriche(Person1, 2, order = 2, axis = "x"), 
+     main = 'X-axis detection for Person 1 ')
+
+plot(deriche(Person1, 2, order = 2, axis = "y"), 
+     main = 'Y-axis detection for Person 1 ')
+
+plot(deriche(Person2, 2, order = 2, axis = "x"), 
+     main = 'X-axis detection for Person 2 ')
+
+plot(deriche(Person2, 2, order = 2, axis = "y"), 
+     main = 'Y-axis detection for Person 2 ')
+```
+
+```{r}
+par(mfrow = c(2, 2))
+
+plot(deriche(Building1, 2, order = 2, axis = "x"), 
+     main = 'X-axis detection for Building 1 ')
+
+plot(deriche(Building1, 2, order = 2, axis = "y"), 
+     main = 'Y-axis detection for Building 1 ')
+
+plot(deriche(Building2, 2, order = 2, axis = "x"), 
+     main = 'X-axis detection for Building 2 ')
+
+plot(deriche(Building2, 2, order = 2, axis = "y"), 
+     main = 'Y-axis detection for Building 2 ')
 ```
 
 ### Splitting & Concatenating Image
 
 ```{r}
-imsplit(Flower1, "x", 4) %>% plot
+plot(imsplit(Flower1, "x", 2))
 ```
 
 ```{r}
@@ -94,27 +131,27 @@ imsplit(Flower2, "x", 4) %>% plot
 ```
 
 ```{r}
-imsplit(parrots, "x", 4) %>% plot
+imsplit(Scenery1, "x", 4) %>% plot
 ```
 
 ```{r}
-imsplit(parrots, "x", 4) %>% plot
+imsplit(Scenery2, "x", 4) %>% plot
 ```
 
 ```{r}
-imsplit(parrots, "x", 4) %>% plot
+imsplit(Person1, "x", 4) %>% plot
 ```
 
 ```{r}
-imsplit(parrots, "x", 4) %>% plot
+imsplit(Person2, "x", 4) %>% plot
 ```
 
 ```{r}
-imsplit(parrots, "x", 4) %>% plot
+imsplit(Building1, "x", 4) %>% plot
 ```
 
 ```{r}
-imsplit(parrots, "x", 4) %>% plot
+imsplit(Building2, "x", 4) %>% plot
 ```
 
 ### Image Transformation
@@ -123,66 +160,236 @@ resizing, rotation, scaling & cropping
 
 ```{r}
 par(mfrow = c(2, 2))
-resize(parrots,-10,-10) %>% plot(main = 'Resize (smaller)')
-imrotate(parrots,30) %>% plot(main="Rotating") #Rotate
-imshift(parrots,40,20) %>% plot(main="Shifting") #Shift
-imshift(parrots,100,100,boundary=2) %>% plot(main="Shifting (circular)") #Shift circular
+# Resize
+resize(Flower1, -10, -10) %>% plot(main = 'Resize')
+# Rotate
+imrotate(Flower1,30) %>% plot(main="Rotating") #Rotate
+# Scaling
+imlist(Flower1,imresize(Flower1,.5)) %>%
+    imappend("x") %>% plot(main = 'Scaling')
+# Crop
+msk = px.flood(Flower1, 100, 100, sigma = 0.28) %>% as.cimg
+autocrop(Flower1 * msk) %>% plot(main = 'Cropping')
+```
+
+```{r}
+par(mfrow = c(2, 2))
+# Resize
+resize(Flower2, -10, -10) %>% plot(main = 'Resize')
+# Rotate
+imrotate(Flower2, 30) %>% plot(main = "Rotating") #Rotate
+# Scaling
+imlist(Flower2, imresize(Flower2, 0.5)) %>%
+    imappend("x") %>% plot(main = 'Scaling')
+# Crop
+msk = px.flood(Flower2, 100, 100, sigma = 0.28) %>% as.cimg
+autocrop(Flower2 * msk) %>% plot(main = 'Cropping')
+```
+
+```{r}
+par(mfrow = c(2, 2))
+# Resize
+resize(Scenery1, -10, -10) %>% plot(main = 'Resize')
+# Rotate
+imrotate(Scenery1, 30) %>% plot(main = "Rotating") #Rotate
+# Scaling
+imlist(Scenery1, imresize(Scenery1, 0.5)) %>%
+    imappend("x") %>% plot(main = 'Scaling')
+# Crop
+msk = px.flood(Scenery1, 100, 100, sigma = 0.28) %>% as.cimg
+autocrop(Scenery1 * msk) %>% plot(main = 'Cropping')
+```
+
+```{r}
+par(mfrow = c(2, 2))
+# Resize
+resize(Scenery2, -10, -10) %>% plot(main = 'Resize')
+# Rotate
+imrotate(Scenery2, 30) %>% plot(main = "Rotating") #Rotate
+# Scaling
+imlist(Scenery2, imresize(Scenery2, 0.5)) %>%
+    imappend("x") %>% plot(main = 'Scaling')
+# Crop
+msk = px.flood(Scenery2, 100, 100, sigma = 0.28) %>% as.cimg
+autocrop(Scenery2 * msk) %>% plot(main = 'Cropping')
+```
+
+```{r}
+par(mfrow = c(2, 2))
+# Resize
+resize(Person1, -10, -10) %>% plot(main = 'Resize')
+# Rotate
+imrotate(Person1, 30) %>% plot(main = "Rotating") #Rotate
+# Scaling
+imlist(Person1, imresize(Person1, 0.5)) %>%
+    imappend("x") %>% plot(main = 'Scaling')
+# Crop
+msk = px.flood(Person1, 100, 100, sigma = 0.28) %>% as.cimg
+autocrop(Person1 * msk) %>% plot(main = 'Cropping')
+```
+
+```{r}
+par(mfrow = c(2, 2))
+# Resize
+resize(Person2, -10, -10) %>% plot(main = 'Resize')
+# Rotate
+imrotate(Person2, 30) %>% plot(main = "Rotating") #Rotate
+# Scaling
+imlist(Person2, imresize(Person2, 0.5)) %>%
+    imappend("x") %>% plot(main = 'Scaling')
+# Crop
+msk = px.flood(Person2, 100, 100, sigma = 0.28) %>% as.cimg
+autocrop(Person2 * msk) %>% plot(main = 'Cropping')
+```
+
+```{r}
+par(mfrow = c(2, 2))
+# Resize
+resize(Building1, -10, -10) %>% plot(main = 'Resize')
+# Rotate
+imrotate(Building1, 30) %>% plot(main = "Rotating") #Rotate
+# Scaling
+imlist(Building1, imresize(Building1, 0.5)) %>%
+    imappend("x") %>% plot(main = 'Scaling')
+# Crop
+msk = px.flood(Building1, 100, 100, sigma = 0.28) %>% as.cimg
+autocrop(Building1 * msk) %>% plot(main = 'Cropping')
+```
+
+```{r}
+par(mfrow = c(2, 2))
+# Resize
+resize(Building2, -10, -10) %>% plot(main = 'Resize')
+# Rotate
+imrotate(Building2, 30) %>% plot(main = "Rotating") #Rotate
+# Scaling
+imlist(Building2, imresize(Building2, 0.5)) %>%
+    imappend("x") %>% plot(main = 'Scaling')
+# Crop
+msk = px.flood(Building2, 100, 100, sigma = 0.28) %>% as.cimg
+autocrop(Building2 * msk) %>% plot(main = 'Cropping')
 ```
 
 ### Filtering Image
 
 ```{r}
+flt = as.cimg(matrix(1, 4, 4)) #4x4 box filter
+grayscale(Flower1) %>% 
+  correlate(flt) %>% 
+  plot(main="Filtering with box filter")
+```
 
+```{r}
+flt = as.cimg(matrix(1, 4, 4)) #4x4 box filter
+grayscale(Flower2) %>% 
+  correlate(flt) %>% 
+  plot(main="Filtering with box filter")
+```
+
+```{r}
+flt = as.cimg(matrix(1, 4, 4)) #4x4 box filter
+grayscale(Scenery1) %>% 
+  correlate(flt) %>% 
+  plot(main = "Filtering with box filter")
+```
+
+```{r}
+flt = as.cimg(matrix(1, 4, 4)) #4x4 box filter
+grayscale(Scenery2) %>% 
+  correlate(flt) %>% 
+  plot(main="Filtering with box filter")
+```
+
+```{r}
+flt = as.cimg(matrix(1, 4, 4)) #4x4 box filter
+grayscale(Person1) %>% 
+  correlate(flt) %>% 
+  plot(main="Filtering with box filter")
+```
+
+```{r}
+flt = as.cimg(matrix(1, 4, 4)) #4x4 box filter
+grayscale(Person2) %>% 
+  correlate(flt) %>% 
+  plot(main="Filtering with box filter")
+```
+
+```{r}
+flt = as.cimg(matrix(1, 4, 4)) #4x4 box filter
+grayscale(Building1) %>% 
+  correlate(flt) %>% 
+  plot(main="Filtering with box filter")
+```
+
+```{r}
+flt = as.cimg(matrix(1, 4, 4)) #4x4 box filter
+grayscale(Building2) %>% 
+  correlate(flt) %>% 
+  plot(main = "Filtering with box filter")
 ```
 
 ### Rectangular, Circular and Fuzzy Selection
 
-```{r rectangular_selection}
+```{r selection}
+par(mfrow = c(2, 2))
 #A rectangular selection from (10,30) to (150,100)
-imsub(Flower1, x %inr% c(30,150),y %inr% c(10,100)) %>% plot
+imsub(Flower1, x %inr% c(30, 150),y %inr% c(10, 100)) %>% plot
 
-px <- (Xc(Flower1) %inr% c(30,150)) & (Yc(Flower1) %inr% c(10,100))
-plot(Flower1)
+px = (Xc(Flower1) %inr% c(30, 150)) & (Yc(Flower1) %inr% c(10, 100))
+# plot(Flower1)
 highlight(px)
-```
 
-```{r circular_selection}
-plot(Flower1)
-px <- (Xc(Flower1) - 200)^2 + (Yc(Flower1) - 350)^2 < 150^2
+# plot(Flower1)
+px = (Xc(Flower1) - 200)^2 + (Yc(Flower1) - 350)^2 < 150^2
 highlight(px)
-```
 
-```{r fuzzy_selection}
-plot(Flower1)
-px.flood(Flower1, 100, 100, sigma=.1) %>% highlight
+# plot(Flower1)
+px.flood(Flower1, 100, 100, sigma = 0.1) %>% highlight
 #Higher tolerance
-px.flood(Flower1, 100, 100, sigma=.14) %>% highlight(col="darkred")
+px.flood(Flower1, 100, 100, sigma = 0.14) %>% highlight(col="darkred")
 #Different initial point
-px.flood(Flower1, 300, 100, sigma=.1) %>% highlight(col="blue")
-```
-
-```{r}
-
+px.flood(Flower1, 300, 100, sigma = 0.1) %>% highlight(col="blue")
 ```
 
 ### Blurry & Sharpen
 
 ```{r}
-par(mfrow = c(1, 2))
-plot(isoblur(Flower1, 10), main = 'Blurred Coloured Flower')
-plot(imsharpen(Flower1, 2), main = 'Sharpen Coloured Flower')
+par(mfrow = c(2, 2))
+plot(isoblur(Flower1, 10), main = 'Blurred Flower 1')
+plot(imsharpen(Flower1, 2), main = 'Sharpen Flower 1')
+
+plot(isoblur(Flower2, 10), main = 'Blurred Flower 2')
+plot(imsharpen(Flower2, 2), main = 'Sharpen Flower 2')
 ```
 
 ```{r}
-par(mfrow = c(1, 2))
-plot(isoblur(Flower2, 50), main = 'Blurred Grayscale Flower')
-plot(imsharpen(Flower2, 1), main = 'Sharpen Grayscale Flower')
+par(mfrow = c(2, 2))
+
+plot(isoblur(Scenery1, 10), main = 'Blurred Scenery 1')
+plot(imsharpen(Scenery1, 1), main = 'Sharpen Scenery 1')
+
+plot(isoblur(Scenery2, 10), main = 'Blurred Scenery 2')
+plot(imsharpen(Scenery2, 1), main = 'Sharpen Scenery 2')
 ```
 
 ```{r}
-par(mfrow = c(1, 2))
-plot(isoblur(Flower2, 10), main = 'Blurred Grayscale Flower')
-plot(imsharpen(Flower2, 1), main = 'Sharpen Grayscale Flower')
+par(mfrow = c(2, 2))
+
+plot(isoblur(Person1, 10), main = 'Blurred Person 1')
+plot(imsharpen(Person1, 1), main = 'Sharpen Person 1')
+
+plot(isoblur(Person2, 10), main = 'Blurred Person 2')
+plot(imsharpen(Person2, 1), main = 'Sharpen Person 2')
+```
+
+```{r}
+par(mfrow = c(2, 2))
+
+plot(isoblur(Building1, 10), main = 'Blurred Building 1')
+plot(imsharpen(Building1, 1), main = 'Sharpen Building 1')
+
+plot(isoblur(Building2, 10), main = 'Blurred Building 2')
+plot(imsharpen(Building2, 1), main = 'Sharpen Building 2')
 ```
 
 ### Segmentation
@@ -194,25 +401,77 @@ plot(imsharpen(Flower2, 1), main = 'Sharpen Grayscale Flower')
 ### Histogram Equalization
 
 ```{r}
+par(mfrow = c(1, 2))
 
+im.g = grayscale(Flower1)
+f = ecdf(im.g)
+f(im.g)  %>% as.cimg(dim = dim(im.g)) %>% plot(main = 'With Histogram Equalisation')
+
+f = ecdf(Flower2)
+f(Flower2)  %>% as.cimg(dim = dim(Flower2)) %>% plot(main = 'With Histogram Equalisation')
+```
+
+```{r}
+par(mfrow = c(1, 2))
+
+im.g = grayscale(Scenery1)
+f = ecdf(im.g)
+f(im.g)  %>% as.cimg(dim = dim(im.g)) %>% plot(main = 'With Histogram Equalisation')
+
+f = ecdf(Scenery2)
+f(Scenery2)  %>% as.cimg(dim = dim(Scenery2)) %>% plot(main = 'With Histogram Equalisation')
+```
+
+```{r}
+par(mfrow = c(1, 2))
+
+im.g = grayscale(Person1)
+f = ecdf(im.g)
+f(im.g)  %>% as.cimg(dim = dim(im.g)) %>% plot(main = 'With Histogram Equalisation')
+
+f = ecdf(Person2)
+f(Person2)  %>% as.cimg(dim = dim(Person2)) %>% plot(main = 'With Histogram Equalisation')
+```
+
+```{r}
+par(mfrow = c(1, 2))
+
+im.g = grayscale(Building1)
+f = ecdf(im.g)
+f(im.g)  %>% as.cimg(dim = dim(im.g)) %>% plot(main = 'With Histogram Equalisation')
+
+f = ecdf(Scenery2)
+f(Building2)  %>% as.cimg(dim = dim(Building2)) %>% plot(main = 'With Histogram Equalisation')
 ```
 
 ### Morphological Operations
 
 ```{r}
+im.g = grayscale(Building1)
 
+threshold((im.g, "20%")) %>% plot
 ```
 
 ## 3. Noise Image
 
+```{r}
+layout(t(1:2))
+Noise1 = load.image('Data/Noise 1.jpeg')
+plot(Noise1, main = 'Noise 1') 
+plot(blur_anisotropic(Noise1, amplitude = 1e3, sharpness = 0.3),
+     main = 'Denoised Image')
+```
+
 ### Image Denoising
 
 ```{r}
-
+Noise1 = load.image('Data/Noise 1.jpeg')
+plot(Noise1, main = 'Noise 1') 
 ```
 
 ### Morphological Operations
 
 ```{r}
-
+Noise1 %>% grayscale %>% plot
+Noise1 %>% grow(0.01) %>% plot('Grow then shrink')
 ```
