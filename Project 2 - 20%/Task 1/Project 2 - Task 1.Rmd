@@ -447,31 +447,259 @@ f(Building2)  %>% as.cimg(dim = dim(Building2)) %>% plot(main = 'With Histogram 
 ### Morphological Operations
 
 ```{r}
-im.g = grayscale(Building1)
+par(mfrow = c(2, 2))
+# Convert to grayscale
+im.gray <- grayscale(Flower1)
 
-threshold((im.g, "20%")) %>% plot
+# the brightest 30% of pixels set to white (1) while the remaining 70% are set to black (0)
+im.bin <- threshold(im.gray, "30%")
+
+# Erosion
+im.eroded <- erode_square(im.bin, size = 3)
+plot(im.eroded, main = "Eroded Image")
+
+# Eroded
+im.dilated <- dilate_square(im.bin, size = 3)
+plot(im.dilated, main = "Dilated Image")
+
+# Opening (Erosion -> Dilation) to remove noise
+im.open <- dilate_square(erode_square(im.bin, 3), 3)
+plot(im.open, main = "Opening")
+
+# Closing (Dilation -> Erosion): Fills gaps
+im.close <- erode_square(dilate_square(im.bin, 3), 3)
+plot(im.close, main = "Closing")
+```
+
+```{r}
+par(mfrow = c(2, 2))
+
+# the brightest 30% of pixels set to white (1) while the remaining 70% are set to black (0)
+im.bin <- threshold(Flower2, "30%")
+
+# Erosion
+im.eroded <- erode_square(im.bin, size = 3)
+plot(im.eroded, main = "Eroded Image")
+
+# Eroded
+im.dilated <- dilate_square(im.bin, size = 3)
+plot(im.dilated, main = "Dilated Image")
+
+# Opening (Erosion -> Dilation) to remove noise
+im.open <- dilate_square(erode_square(im.bin, 3), 3)
+plot(im.open, main = "Opening")
+
+# Closing (Dilation -> Erosion): Fills gaps
+im.close <- erode_square(dilate_square(im.bin, 3), 3)
+plot(im.close, main = "Closing")
+```
+
+```{r}
+par(mfrow = c(2, 2))
+# Convert to grayscale
+im.gray <- grayscale(Scenery1)
+
+# the brightest 30% of pixels set to white (1) while the remaining 70% are set to black (0)
+im.bin <- threshold(im.gray, "30%")
+
+# Erosion
+im.eroded <- erode_square(im.bin, size = 3)
+plot(im.eroded, main = "Eroded Image")
+
+# Eroded
+im.dilated <- dilate_square(im.bin, size = 3)
+plot(im.dilated, main = "Dilated Image")
+
+# Opening (Erosion -> Dilation) to remove noise
+im.open <- dilate_square(erode_square(im.bin, 3), 3)
+plot(im.open, main = "Opening")
+
+# Closing (Dilation -> Erosion): Fills gaps
+im.close <- erode_square(dilate_square(im.bin, 3), 3)
+plot(im.close, main = "Closing")
+```
+
+```{r}
+par(mfrow = c(2, 2))
+
+# the brightest 30% of pixels set to white (1) while the remaining 70% are set to black (0)
+im.bin <- threshold(Scenery2, "30%")
+
+# Erosion
+im.eroded <- erode_square(im.bin, size = 3)
+plot(im.eroded, main = "Eroded Image")
+
+# Eroded
+im.dilated <- dilate_square(im.bin, size = 3)
+plot(im.dilated, main = "Dilated Image")
+
+# Opening (Erosion -> Dilation) to remove noise
+im.open <- dilate_square(erode_square(im.bin, 3), 3)
+plot(im.open, main = "Opening")
+
+# Closing (Dilation -> Erosion): Fills gaps
+im.close <- erode_square(dilate_square(im.bin, 3), 3)
+plot(im.close, main = "Closing")
+```
+
+```{r}
+par(mfrow = c(2, 2))
+# Convert to grayscale
+im.gray <- grayscale(Person1)
+
+# the brightest 30% of pixels set to white (1) while the remaining 70% are set to black (0)
+im.bin <- threshold(im.gray, "30%")
+
+# Erosion
+im.eroded <- erode_square(im.bin, size = 3)
+plot(im.eroded, main = "Eroded Image")
+
+# Eroded
+im.dilated <- dilate_square(im.bin, size = 3)
+plot(im.dilated, main = "Dilated Image")
+
+# Opening (Erosion -> Dilation) to remove noise
+im.open <- dilate_square(erode_square(im.bin, 3), 3)
+plot(im.open, main = "Opening")
+
+# Closing (Dilation -> Erosion): Fills gaps
+im.close <- erode_square(dilate_square(im.bin, 3), 3)
+plot(im.close, main = "Closing")
+```
+
+```{r}
+par(mfrow = c(2, 2))
+
+# Erosion
+im.eroded <- erode_square(Person2, size = 3)
+plot(im.eroded, main = "Eroded Image")
+
+# Eroded
+im.dilated <- dilate_square(im.bin, size = 3)
+plot(im.dilated, main = "Dilated Image")
+
+# Opening (Erosion -> Dilation) to remove noise
+im.open <- dilate_square(erode_square(im.bin, 3), 3)
+plot(im.open, main = "Opening")
+
+# Closing (Dilation -> Erosion): Fills gaps
+im.close <- erode_square(dilate_square(im.bin, 3), 3)
+plot(im.close, main = "Closing")
+```
+
+```{r}
+par(mfrow = c(2, 2))
+# Convert to grayscale
+im.gray <- grayscale(Building1)
+
+# the brightest 30% of pixels set to white (1) while the remaining 70% are set to black (0)
+im.bin <- threshold(im.gray, "30%")
+
+# Erosion
+im.eroded <- erode_square(im.bin, size = 3)
+plot(im.eroded, main = "Eroded Image")
+
+# Eroded
+im.dilated <- dilate_square(im.bin, size = 3)
+plot(im.dilated, main = "Dilated Image")
+
+# Opening (Erosion -> Dilation) to remove noise
+im.open <- dilate_square(erode_square(im.bin, 3), 3)
+plot(im.open, main = "Opening")
+
+# Closing (Dilation -> Erosion): Fills gaps
+im.close <- erode_square(dilate_square(im.bin, 3), 3)
+plot(im.close, main = "Closing")
+```
+
+```{r}
+par(mfrow = c(2, 2))
+
+# the brightest 30% of pixels set to white (1) while the remaining 70% are set to black (0)
+im.bin <- threshold(Bulding2, "30%")
+
+# Erosion
+im.eroded <- erode_square(im.bin, size = 3)
+plot(im.eroded, main = "Eroded Image")
+
+# Eroded
+im.dilated <- dilate_square(im.bin, size = 3)
+plot(im.dilated, main = "Dilated Image")
+
+# Opening (Erosion -> Dilation) to remove noise
+im.open <- dilate_square(erode_square(im.bin, 3), 3)
+plot(im.open, main = "Opening")
+
+# Closing (Dilation -> Erosion): Fills gaps
+im.close <- erode_square(dilate_square(im.bin, 3), 3)
+plot(im.close, main = "Closing")
 ```
 
 ## 3. Noise Image
 
 ```{r}
 layout(t(1:2))
-Noise1 = load.image('Data/Noise 1.jpeg')
-plot(Noise1, main = 'Noise 1') 
-plot(blur_anisotropic(Noise1, amplitude = 1e3, sharpness = 0.3),
-     main = 'Denoised Image')
+Noise1 = load.image('Data/Noise1.jpg')
+Noise2 = load.image('Data/Noise2.jpg')
+plot(Noise1, main = 'Noise 1')
+plot(Noise2, main = 'Noise 2')
 ```
 
 ### Image Denoising
 
 ```{r}
-Noise1 = load.image('Data/Noise 1.jpeg')
-plot(Noise1, main = 'Noise 1') 
+par(mfrow = c(1,2))
+
+plot(blur_anisotropic(Noise1, amplitude = 1e3, sharpness = 0.3),
+     main = 'Denoised Image 1')
+
+plot(blur_anisotropic(Noise2, amplitude = 1e3, sharpness = 0.3),
+     main = 'Denoised Image 2')
 ```
 
 ### Morphological Operations
 
 ```{r}
-Noise1 %>% grayscale %>% plot
-Noise1 %>% grow(0.01) %>% plot('Grow then shrink')
+par(mfrow = c(2, 2))
+# Convert to grayscale
+im.gray <- grayscale(Noise1)
+
+# the brightest 30% of pixels set to white (1) while the remaining 70% are set to black (0)
+im.bin <- threshold(im.gray, "30%")
+
+# Erosion
+im.eroded <- erode_square(im.bin, size = 3)
+plot(im.eroded, main = "Eroded Image")
+
+# Eroded
+im.dilated <- dilate_square(im.bin, size = 3)
+plot(im.dilated, main = "Dilated Image")
+
+# Opening (Erosion -> Dilation) to remove noise
+im.open <- dilate_square(erode_square(im.bin, 3), 3)
+plot(im.open, main = "Opening")
+
+# Closing (Dilation -> Erosion): Fills gaps
+im.close <- erode_square(dilate_square(im.bin, 3), 3)
+plot(im.close, main = "Closing")
+```
+
+```{r}
+par(mfrow = c(2, 2))
+
+# Erosion
+im.eroded <- erode_square(Noise2, size = 3)
+plot(im.eroded, main = "Eroded Image")
+
+# Eroded
+im.dilated <- dilate_square(im.bin, size = 3)
+plot(im.dilated, main = "Dilated Image")
+
+# Opening (Erosion -> Dilation) to remove noise
+im.open <- dilate_square(erode_square(im.bin, 3), 3)
+plot(im.open, main = "Opening")
+
+# Closing (Dilation -> Erosion): Fills gaps
+im.close <- erode_square(dilate_square(im.bin, 3), 3)
+plot(im.close, main = "Closing")
 ```
