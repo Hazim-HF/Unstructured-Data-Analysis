@@ -22,14 +22,15 @@ str(lion)
 
 ```{r}
 # define plot for frequency spectrum analysis
-plot.frequency.spectrum <- function(X.k, xlimits=c(0,length(X.k))) {
-  plot.data <- cbind(0:(length(X.k)-1), Mod(X.k))
+plot.frequency.spectrum = function(X.k, xlimits = c(0, length(X.k))) {
+  plot.data = cbind(0:(length(X.k) - 1), Mod(X.k))
 
-  plot.data[2:length(X.k),2] <- 2*plot.data[2:length(X.k),2]
+  plot.data[2:length(X.k), 2] = 2 * plot.data[2:length(X.k), 2]
 
-  plot(plot.data, t="h", lwd=2, main="Frequency Spectrum of Fast Fourier Transform (FFT)",
-       xlab="Frequency (Hz)", ylab="Strength",
-       xlim=xlimits, ylim=c(0,max(Mod(plot.data[,2]))))
+  plot(plot.data, t = "h", lwd = 2, 
+       main = "Frequency Spectrum of (FFT) of Lion's Roar",
+       xlab = "Frequency (Hz)", ylab = "Strength",
+       xlim = xlimits, ylim = c(0,max(Mod(plot.data[,2]))))
 }
 ```
 
@@ -43,7 +44,7 @@ Above figures visualized the stereo audio signal (left and right channel) of a l
 timer(lion, f=lion@samp.rate, 
       threshold=50, 
       msmooth=c(4000,0), 
-      main = 'Temporal Segmentation of Audio on Amplitude Threshold')
+      main = 'Temporal Segmentation of Lion Roar')
 ```
 
 This plot visualized the apli
@@ -56,7 +57,7 @@ plot.frequency.spectrum(lion_r)
 The frequency spectrum plot above is generated from FFT of the left audio channel. The horizontal axis respresent the range of frequencies in the signal while the vertical axis represent the strength of each frequency.
 
 ```{r}
-spectro(lion, main = "Spectrogram of Audio")
+spectro(lion, main = "Spectrogram of Lion Roar")
 ```
 
 # Crying Man Audio
@@ -72,14 +73,29 @@ plot(cry)
 ```
 
 ```{r}
-timer(cry, f=22050, threshold = 20, msmooth = c(3000,0))
+timer(cry, 
+      f=cry@samp.rate, 
+      threshold = 20, 
+      msmooth = c(3000,0),
+      main = 'Temporal Segmentation of Man Crying')
 ```
 
 ```{r}
+plot.frequency.spectrum = function(X.k, xlimits = c(0, length(X.k))) {
+  plot.data = cbind(0:(length(X.k) - 1), Mod(X.k))
+
+  plot.data[2:length(X.k), 2] = 2 * plot.data[2:length(X.k), 2]
+
+  plot(plot.data, t = "h", lwd = 2, 
+       main = "Frequency Spectrum of (FFT) of Man's Crying",
+       xlab = "Frequency (Hz)", ylab = "Strength",
+       xlim = xlimits, ylim = c(0,max(Mod(plot.data[,2]))))
+}
+
 cry_m = fft(cry@left)
 plot.frequency.spectrum(cry_m)
 ```
 
 ```{r}
-spectro(cry)
+spectro(cry, main = 'Spectrogram of man crying')
 ```

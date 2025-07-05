@@ -349,7 +349,7 @@ plot.frequency.spectrum <- function(X.k, xlimits=c(0,length(X.k))) {
 }
 ```
 
-## 2.3 Fast Fourier Transform 
+## 2.3 Fast Fourier Transform
 
 ```{r}
 par(mfrow=c(1,3))

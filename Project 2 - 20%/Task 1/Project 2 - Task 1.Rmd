@@ -395,7 +395,47 @@ plot(imsharpen(Building2, 1), main = 'Sharpen Building 2')
 ### Segmentation
 
 ```{r}
+par(mfrow = c(1, 2))
 
+im.g = grayscale(Flower1)
+segmented.img = im.g > 0.5
+plot(segmented.img, main = 'Segemented Flower 1')
+
+segmented.img = Flower2 > 0.5
+plot(segmented.img, main = 'Segemented Flower 2')
+```
+
+```{r}
+par(mfrow = c(1, 2))
+
+im.g = grayscale(Scenery1)
+segmented.img = im.g > 0.5
+plot(segmented.img, main = 'Segemented Scenery 1')
+
+segmented.img = Scenery2 > 0.5
+plot(segmented.img, main = 'Segemented Scenery 2')
+```
+
+```{r}
+par(mfrow = c(1, 2))
+
+im.g = grayscale(Person1)
+segmented.img = im.g > 0.5
+plot(segmented.img, main = 'Segemented Person 1')
+
+segmented.img = Person2 > 0.5
+plot(segmented.img, main = 'Segemented Personr 2')
+```
+
+```{r}
+par(mfrow = c(1, 2))
+
+im.g = grayscale(Building1)
+segmented.img = im.g > 0.5
+plot(segmented.img, main = 'Segemented Building 1')
+
+segmented.img = Building2 > 0.5
+plot(segmented.img, main = 'Segemented Building 2')
 ```
 
 ### Histogram Equalization
