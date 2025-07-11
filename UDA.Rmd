@@ -328,9 +328,9 @@ page %>% html_nodes("a.ipc-link") %>% html_text
 page %>% html_nodes("span.sc-4b408797-8") %>% html_text
 ```
 
-# Text Data Analysis
+# 4. Text Data Analysis (TDA)
 
-## Latent Dirichlet Allocation (LDA)
+## 4.1 Latent Dirichlet Allocation (LDA)
 
 ```{r}
 library(topicmodels)
@@ -404,13 +404,14 @@ tidy(AssociatedPress) %>%
   arrange(desc(count))
 ```
 
-## Text Cluster Analysis
+## 4.2 Text Cluster Analysis
 
-### K-means
+### 4.2.1 K-means
 
 ```{r}
-mytext2 <- DirSource("04. Text Data Analysis/TextMining-20250517")
-docsz <- Corpus(mytext2)
+library(tm)
+mytext = DirSource("04. Text Data Analysis/TextMining")
+docs = Corpus(mytext)
 ```
 
 ```{r}
@@ -418,58 +419,71 @@ getTransformations()
 ```
 
 ```{r}
-docsz <- tm_map(docsz,content_transformer(tolower))
+docs1 = tm_map(docs,content_transformer(tolower))
 
-toSpace <- content_transformer(function(x,pattern){
+toSpace = content_transformer(function(x,pattern){
   return(gsub(pattern," ", x))
 })
 
-docsz <- tm_map(docsz, toSpace, "-")
-docsz <- tm_map(docsz, removePunctuation) #remove punctuation
-docsz <- tm_map(docsz, removeNumbers) #Strip digits
-docsz <- tm_map(docsz, removeWords, stopwords("english")) #remove stopwords
-docsz <- tm_map(docsz, stripWhitespace) #remove whitespace
+docs2 = tm_map(docs1, toSpace, "-")
+docs3 = tm_map(docs2, removePunctuation) #remove punctuation
+docs4 = tm_map(docs3, removeNumbers) #Strip digits
+docs5 = tm_map(docs4, removeWords, stopwords("english")) #remove stopwords
+docs6 = tm_map(docs5, stripWhitespace) #remove whitespace
 ```
 
 ```{r}
-dtm <-DocumentTermMatrix(docsz) #Create document term matrix
+dtm = DocumentTermMatrix(docs6) #Create document term matrix
 dtm
 ```
 
+Present text data numerically, weighted by TF-IDF
+
 ```{r}
-## Present text data numerically, weighted TF-IDF
 dtm.tfidf = weightTfIdf(dtm)
 dtm.tfidf = removeSparseTerms(dtm.tfidf, 0.999)
 tfidf.matrix = as.matrix(dtm.tfidf)
 ```
 
+Cosine distance matrix (useful for specific clustering algorithms)
+
 ```{r}
-## Cosine distance matrix (useful for specific clustering algorithms)
 library(proxy)
 dist.matrix = dist(tfidf.matrix , method = "cosine")
 ```
 
+Perform clustering
+
 ```{r}
-## Perform clustering
 truth.K=3
 
 library(dbscan)
-clustering.kmeans = kmeans(tfidf.matrix , truth.K)
-clustering.hierarchical = hclust(dist.matrix , method = "ward.D2")
-clustering.dbscan = hdbscan(dist.matrix , minPts=10)
+
+clustering.kmeans = kmeans(tfidf.matrix, truth.K)
+
+clustering.hierarchical = hclust(dist.matrix ,method = "ward.D2")
+
+clustering.dbscan = hdbscan(dist.matrix, minPts = 10)
 ```
 
 ```{r}
 library(cluster)
+
+par(mfrow = c(3, 1))
+dev.new(width=8, height=10) # in inches
+
 clusplot(as.matrix(dist.matrix),
          clustering.kmeans$cluster,
          color=T,
          shade=T,
          labels=2,
          lines=0)
+
 plot(clustering.hierarchical)
-rect.hclust(clustering.hierarchical,3)
-plot(as.matrix(dist.matrix),col=clustering.dbscan$cluster+1L)
+rect.hclust(clustering.hierarchical, 3)
+
+plot(as.matrix(dist.matrix),
+     col=clustering.dbscan$cluster + 1L)
 ```
 
 ```{r}
@@ -478,21 +492,47 @@ slave.hierarchical = cutree(clustering.hierarchical, k = truth.K)
 slave.dbscan = clustering.dbscan$cluster
 ```
 
+```{r kmeans}
+clustering.kmeans = kmeans(tfidf.matrix, truth.K)
+
+master.cluster = clustering.kmeans$cluster
+```
+
+```{r hierarchical}
+clustering.hierarchical = hclust(dist.matrix ,method = "ward.D2")
+
+slave.hierarchical = cutree(clustering.hierarchical, k = truth.K)
+
+```
+
+```{r dbscan}
+clustering.dbscan = hdbscan(dist.matrix, minPts=10)
+
+slave.dbscan = clustering.dbscan$cluster
+```
+
+Classical Multidimensional Scaling (CMDS) aka Principal Coordinate Analysis (PCoA) is a dimension reduction technique `cmdscale()`
+
+```{r}
+points = cmdscale(dist.matrix, k = 2)
+head(points)
+```
+
 ```{r}
 library(colorspace)
-points = cmdscale(dist.matrix, k = 3)
+
 palette = diverge_hcl(truth.K) # Creating a color palette
 ```
 
 ```{r}
 plot(points, 
-     main = 'K-Means Clustering', 
-     col = as.factor(master.cluster),
-     pch = 16,
-     mai = c(0,0,0,0), 
-     mar = c(0,0,0,0),
-     xaxt = 'n', 
-     yaxt = 'n', 
+     main = 'K-Means Clustering', # plot title
+     col = as.factor(master.cluster), # set the color for each points
+     pch = 16, # shape of points
+     mai = c(0,0,0,0), # margin size in inch
+     mar = c(0,0,0,0), # margin size in number of lines
+     xaxt = 'n', # x-axis type = none
+     yaxt = 'n', # y-axis type = none
      xlab = '', 
      ylab ='')
 
@@ -520,16 +560,9 @@ plot(points,
 ```
 
 ```{r}
-plot(points, 
-     main = 'K-Means Clustering', 
-     col = as.factor(master.cluster),
-     pch = 19,
-     mai = c(0,0,0,0), 
-     mar = c(0,0,0,0),
-     xaxt = 'n', 
-     yaxt = 'n', 
-     xlab = '', 
-     ylab ='')
+plot(points,
+     col = master.cluster,
+     pch = 16)
 
 ```
 
@@ -555,6 +588,47 @@ names(cost_df) <- c("cluster","cost")
 ```{r}
 plot(cost_df$cluster, cost_df$cost)
 lines(cost_df$cluster, cost_df$cost)
+```
+
+## 4.3 Sentiment Analysis
+
+```{r}
+library(tm)
+library(SnowballC)
+library(wordcloud)
+
+text = readLines(file.choose())
+docs = Corpus(VectorSource(text))
+inspect(docs)
+toSpace = content_transformer(function(x,pattern)gsub(pattern," ",x))
+docs = tm_map(docs, toSpace, "/")
+docs = tm_map(docs, toSpace, "@")
+docs = tm_map(docs, toSpace, "\\|")
+docs = tm_map(docs,content_transformer(tolower))
+docs = tm_map(docs,removeNumbers)
+docs = tm_map(docs,removeWords, stopwords("english"))
+docs = tm_map(docs,removeWords, c("dan","dengan","atau","sebagai","yang","itu",
+                                "ini","asm","dari","daripada"))
+docs=tm_map(docs,removePunctuation)
+docs=tm_map(docs,stripWhitespace)
+docs=tm_map(docs,stemDocument)
+dtm=TermDocumentMatrix(docs)
+m=as.matrix(dtm)
+v=sort(rowSums(m),decreasing=TRUE)
+d=data.frame(word=names(v),freq=v)
+m=d$word
+```
+
+```{r sentiment_analysis}
+mysentiment<-function(m)
+{
+  mydictpos=c("baik","cantik","bijak","kuat")
+  mydictneg=c("jahat","buruk","bodoh","lemah")
+  pos_score=sum(!is.na(match(m,mydictpos)))
+  neg_score=(-1)*sum(!is.na(match(m,mydictneg)))
+  sentiment_score=pos_score+neg_score
+  sentiment_score
+}
 ```
 
 # Image Data Analysis
@@ -592,47 +666,6 @@ plot.frequency.spectrum(zk[1:20000])
 
 ```{r}
 
-```
-
-## Sentiment Analysis
-
-```{r data_prepping}
-library(tm)
-library(SnowballC)
-library(wordcloud)
-text=readLines(file.choose())
-docs=Corpus(VectorSource(text))
-inspect(docs)
-toSpace=content_transformer(function(x,pattern)gsub(pattern," ",x))
-docs=tm_map(docs, toSpace, "/")
-docs=tm_map(docs, toSpace, "@")
-docs=tm_map(docs, toSpace, "\\|")
-docs=tm_map(docs,content_transformer(tolower))
-docs=tm_map(docs,removeNumbers)
-docs=tm_map(docs,removeWords, stopwords("english"))
-docs=tm_map(docs,removeWords, c("dan","dengan","atau","sebagai","yang","itu",
-                                "ini","asm","dari","daripada"))
-docs=tm_map(docs,removePunctuation)
-docs=tm_map(docs,stripWhitespace)
-docs=tm_map(docs,stemDocument)
-dtm=TermDocumentMatrix(docs)
-m=as.matrix(dtm)
-v=sort(rowSums(m),decreasing=TRUE)
-d=data.frame(word=names(v),freq=v)
-m=d$word
-
-```
-
-```{r sentiment_analysis}
-mysentiment<-function(m)
-{
-  mydictpos=c("baik","cantik","bijak","kuat")
-  mydictneg=c("jahat","buruk","bodoh","lemah")
-  pos_score=sum(!is.na(match(m,mydictpos)))
-  neg_score=(-1)*sum(!is.na(match(m,mydictneg)))
-  sentiment_score=pos_score+neg_score
-  sentiment_score
-}
 ```
 
 # Extra Example / Exercise
