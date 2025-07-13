@@ -14,9 +14,12 @@ library(rpanel)
 library(tuneR)
 ```
 
+# Roaring Lion Audio
+
 ```{r}
 # upload data of a lion roar
 lion = readMP3('Data/lion_roar.mp3')
+plot(lion)
 str(lion)
 ```
 
@@ -35,16 +38,14 @@ plot.frequency.spectrum = function(X.k, xlimits = c(0, length(X.k))) {
 ```
 
 ```{r}
-plot(lion)
+plot(lion, main = "Waveform Plot of Lion's Roar", xlab = "Time (seconds)")
 ```
-
-Above figures visualized the stereo audio signal (left and right channel) of a lion's roar over a time duration of approximately 8 seconds. The horizontal axis is the audio time stamp in seconds and the vertical axis is the amplitude measured in Hz. Both channel appear similar indicating a balanced stereo mix with no significant channel bias. The wave form shows three main roar burst with the first burst starts around 0.5s and ends around 2s, the second burst from about 2.5s to 5.5s, and the third burst from 6s to 7.5s. The amplitude shows that each roar have a similar peak at around 20,000 Hz. We can conclude that this audio signal has a dynamic variation, as shown by a not uniform roar including short and long intense peak, pause, and amplitude.
 
 ```{r}
 timer(lion, f=lion@samp.rate, 
       threshold=50, 
       msmooth=c(4000,0), 
-      main = 'Temporal Segmentation of Lion Roar')
+      main = 'Timer Plot of Lion Roar')
 ```
 
 This plot visualized the apli
@@ -54,7 +55,7 @@ lion_r = fft(lion@left)
 plot.frequency.spectrum(lion_r)
 ```
 
-The frequency spectrum plot above is generated from FFT of the left audio channel. The horizontal axis respresent the range of frequencies in the signal while the vertical axis represent the strength of each frequency.
+The frequency spectrum plot above is generated from FFT of the left audio channel. The horizontal axis represent the range of frequencies in the signal while the vertical axis represent the strength of each frequency.
 
 ```{r}
 spectro(lion, main = "Spectrogram of Lion Roar")
@@ -69,15 +70,16 @@ str(cry)
 ```
 
 ```{r}
-plot(cry)
+plot(cry, main = "Waveform Plot of Man's Crying", xlab = "Time (seconds)")
 ```
 
 ```{r}
 timer(cry, 
       f=cry@samp.rate, 
-      threshold = 20, 
+      threshold = 25, 
       msmooth = c(3000,0),
-      main = 'Temporal Segmentation of Man Crying')
+      main = 'Timer Plot of Man Crying')
+
 ```
 
 ```{r}
