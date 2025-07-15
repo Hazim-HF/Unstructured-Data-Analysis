@@ -1,0 +1,31 @@
+---
+title: "TDA"
+author: "Fitri"
+date: "2025-07-15"
+output: 
+  pdf_document: 
+    toc: true
+    toc_depth: 5
+---
+
+# Latent Dirichlet Allocation (LDA)
+
+```{r read_data}
+library(topicmodels)
+data("AssociatedPress")
+AssociatedPress
+```
+
+```{r define_lda}
+lda = LDA(AssociatedPress, k=2, control = list(seed=1234))
+# k = 2 means that we want to categorize our dataset into two topics
+lda
+```
+
+```{r}
+
+```
+
+# Text Cluster Analysis
+
+# Sentiment Analysis
