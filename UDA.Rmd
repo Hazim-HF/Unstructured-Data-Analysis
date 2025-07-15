@@ -3,14 +3,13 @@ title: "Unstructured Data Analytics"
 author: "Hazim Fitri"
 date: "`r Sys.Date()`"
 output: pdf_document
-always_allow_html: true
 ---
 
 ## Read data
 
 ```{r}
 library(tm)
-eg3 = c('Hi!', 'Welcome to STQD6114', )
+eg3 = c('Hi!', 'Welcome to STQD6114')
 ```
 
 # Text Data Mining

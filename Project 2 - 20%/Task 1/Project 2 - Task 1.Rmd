@@ -123,7 +123,7 @@ plot(deriche(Building2, 2, order = 2, axis = "y"),
 ### Splitting & Concatenating Image
 
 ```{r}
-plot(imsplit(Flower1, "x", 2))
+imsplit(Flower1, "x", 4) %>% plot
 ```
 
 ```{r}
@@ -163,7 +163,7 @@ par(mfrow = c(2, 2))
 # Resize
 resize(Flower1, -10, -10) %>% plot(main = 'Resize')
 # Rotate
-imrotate(Flower1,30) %>% plot(main="Rotating") #Rotate
+imrotate(Flower1,30) %>% plot(main="Rotating")
 # Scaling
 imlist(Flower1,imresize(Flower1,.5)) %>%
     imappend("x") %>% plot(main = 'Scaling')
@@ -281,7 +281,7 @@ grayscale(Flower1) %>%
 
 ```{r}
 flt = as.cimg(matrix(1, 4, 4)) #4x4 box filter
-grayscale(Flower2) %>% 
+Flower2 %>% 
   correlate(flt) %>% 
   plot(main="Filtering with box filter")
 ```
@@ -295,7 +295,7 @@ grayscale(Scenery1) %>%
 
 ```{r}
 flt = as.cimg(matrix(1, 4, 4)) #4x4 box filter
-grayscale(Scenery2) %>% 
+Scenery2 %>% 
   correlate(flt) %>% 
   plot(main="Filtering with box filter")
 ```
@@ -309,7 +309,7 @@ grayscale(Person1) %>%
 
 ```{r}
 flt = as.cimg(matrix(1, 4, 4)) #4x4 box filter
-grayscale(Person2) %>% 
+Person2 %>% 
   correlate(flt) %>% 
   plot(main="Filtering with box filter")
 ```
@@ -323,32 +323,196 @@ grayscale(Building1) %>%
 
 ```{r}
 flt = as.cimg(matrix(1, 4, 4)) #4x4 box filter
-grayscale(Building2) %>% 
+Building2 %>% 
   correlate(flt) %>% 
   plot(main = "Filtering with box filter")
 ```
 
 ### Rectangular, Circular and Fuzzy Selection
 
-```{r selection}
-par(mfrow = c(2, 2))
-#A rectangular selection from (10,30) to (150,100)
+```{r}
+par(mfrow=c(2,1))
 imsub(Flower1, x %inr% c(30, 150),y %inr% c(10, 100)) %>% plot
 
 px = (Xc(Flower1) %inr% c(30, 150)) & (Yc(Flower1) %inr% c(10, 100))
-# plot(Flower1)
+plot(Flower1)
+highlight(px)
+```
+
+```{r selection}
+par(mfrow = c(2, 2))
+#A rectangular selection from (10,30) to (150,100)
+imsub(Flower1, x %inr% c(30, 150), y %inr% c(10, 100)) %>% 
+  plot(main = 'Rectangular Selection')
+
+px = (Xc(Flower1) %inr% c(30, 150)) & (Yc(Flower1) %inr% c(10, 100))
+plot(Flower1, main = 'Pixset of Rectangular Selection')
 highlight(px)
 
-# plot(Flower1)
+plot(Flower1, main = 'Circular Selection')
 px = (Xc(Flower1) - 200)^2 + (Yc(Flower1) - 350)^2 < 150^2
 highlight(px)
 
-# plot(Flower1)
+plot(Flower1, main = 'Fuzzy Selection')
 px.flood(Flower1, 100, 100, sigma = 0.1) %>% highlight
 #Higher tolerance
 px.flood(Flower1, 100, 100, sigma = 0.14) %>% highlight(col="darkred")
 #Different initial point
 px.flood(Flower1, 300, 100, sigma = 0.1) %>% highlight(col="blue")
+```
+
+```{r}
+par(mfrow = c(2, 2))
+#A rectangular selection from (10,30) to (150,100)
+imsub(Flower2, x %inr% c(30, 150), y %inr% c(10, 100)) %>% 
+  plot(main = 'Rectangular Selection')
+
+px = (Xc(Flower2) %inr% c(30, 150)) & (Yc(Flower2) %inr% c(10, 100))
+plot(Flower2, main = 'Pixset of Rectangular Selection')
+highlight(px)
+
+plot(Flower2, main = 'Circular Selection')
+px = (Xc(Flower2) - 200)^2 + (Yc(Flower2) - 350)^2 < 150^2
+highlight(px)
+
+plot(Flower2, main = 'Fuzzy Selection')
+px.flood(Flower2, 100, 100, sigma = 0.1) %>% highlight
+#Higher tolerance
+px.flood(Flower2, 100, 100, sigma = 0.14) %>% highlight(col="darkred")
+#Different initial point
+px.flood(Flower2, 300, 100, sigma = 0.1) %>% highlight(col="blue")
+```
+
+```{r scenery}
+par(mfrow = c(2, 2))
+#A rectangular selection from (10,30) to (150,100)
+imsub(Scenery1, x %inr% c(30, 150), y %inr% c(10, 100)) %>% 
+  plot(main = 'Rectangular Selection')
+
+px = (Xc(Scenery1) %inr% c(30, 150)) & (Yc(Scenery1) %inr% c(10, 100))
+plot(Scenery1, main = 'Pixset of Rectangular Selection')
+highlight(px)
+
+plot(Scenery1, main = 'Circular Selection')
+px = (Xc(Scenery1) - 200)^2 + (Yc(Scenery1) - 350)^2 < 150^2
+highlight(px)
+
+plot(Scenery1, main = 'Fuzzy Selection')
+px.flood(Scenery1, 100, 100, sigma = 0.1) %>% highlight
+#Higher tolerance
+px.flood(Scenery1, 100, 100, sigma = 0.14) %>% highlight(col="darkred")
+#Different initial point
+px.flood(Scenery1, 300, 100, sigma = 0.1) %>% highlight(col="blue")
+```
+
+```{r}
+par(mfrow = c(2, 2))
+#A rectangular selection from (10,30) to (150,100)
+imsub(Scenery2, x %inr% c(30, 150), y %inr% c(10, 100)) %>% 
+  plot(main = 'Rectangular Selection')
+
+px = (Xc(Scenery2) %inr% c(30, 150)) & (Yc(Scenery2) %inr% c(10, 100))
+plot(Scenery2, main = 'Pixset of Rectangular Selection')
+highlight(px)
+
+plot(Scenery2, main = 'Circular Selection')
+px = (Xc(Scenery2) - 200)^2 + (Yc(Scenery2) - 350)^2 < 150^2
+highlight(px)
+
+plot(Scenery2, main = 'Fuzzy Selection')
+px.flood(Scenery2, 100, 100, sigma = 0.1) %>% highlight
+#Higher tolerance
+px.flood(Scenery2, 100, 100, sigma = 0.14) %>% highlight(col="darkred")
+#Different initial point
+px.flood(Scenery2, 300, 100, sigma = 0.1) %>% highlight(col="blue")
+```
+
+```{r person}
+par(mfrow = c(2, 2))
+#A rectangular selection from (10,30) to (150,100)
+imsub(Person1, x %inr% c(30, 150), y %inr% c(10, 100)) %>% 
+  plot(main = 'Rectangular Selection')
+
+px = (Xc(Person1) %inr% c(30, 150)) & (Yc(Person1) %inr% c(10, 100))
+plot(Person1, main = 'Pixset of Rectangular Selection')
+highlight(px)
+
+plot(Person1, main = 'Circular Selection')
+px = (Xc(Person1) - 200)^2 + (Yc(Person1) - 350)^2 < 150^2
+highlight(px)
+
+plot(Person1, main = 'Fuzzy Selection')
+px.flood(Person1, 100, 100, sigma = 0.1) %>% highlight
+#Higher tolerance
+px.flood(Person1, 100, 100, sigma = 0.14) %>% highlight(col="darkred")
+#Different initial point
+px.flood(Person1, 300, 100, sigma = 0.1) %>% highlight(col="blue")
+```
+
+```{r}
+par(mfrow = c(2, 2))
+#A rectangular selection from (10,30) to (150,100)
+imsub(Person2, x %inr% c(30, 150), y %inr% c(10, 100)) %>% 
+  plot(main = 'Rectangular Selection')
+
+px = (Xc(Person2) %inr% c(30, 150)) & (Yc(Person2) %inr% c(10, 100))
+plot(Person2, main = 'Pixset of Rectangular Selection')
+highlight(px)
+
+plot(Person2, main = 'Circular Selection')
+px = (Xc(Person2) - 200)^2 + (Yc(Person2) - 350)^2 < 150^2
+highlight(px)
+
+plot(Person2, main = 'Fuzzy Selection')
+px.flood(Person2, 100, 100, sigma = 0.1) %>% highlight
+#Higher tolerance
+px.flood(Person2, 100, 100, sigma = 0.14) %>% highlight(col="darkred")
+#Different initial point
+px.flood(Person2, 300, 100, sigma = 0.1) %>% highlight(col="blue")
+```
+
+```{r building}
+par(mfrow = c(2, 2))
+#A rectangular selection from (10,30) to (150,100)
+imsub(Building1, x %inr% c(30, 150), y %inr% c(10, 100)) %>% 
+  plot(main = 'Rectangular Selection')
+
+px = (Xc(Building1) %inr% c(30, 150)) & (Yc(Building1) %inr% c(10, 100))
+plot(Building1, main = 'Pixset of Rectangular Selection')
+highlight(px)
+
+plot(Building1, main = 'Circular Selection')
+px = (Xc(Building1) - 200)^2 + (Yc(Building1) - 350)^2 < 150^2
+highlight(px)
+
+plot(Building1, main = 'Fuzzy Selection')
+px.flood(Building1, 100, 100, sigma = 0.1) %>% highlight
+#Higher tolerance
+px.flood(Building1, 100, 100, sigma = 0.14) %>% highlight(col="darkred")
+#Different initial point
+px.flood(Building1, 300, 100, sigma = 0.1) %>% highlight(col="blue")
+```
+
+```{r}
+par(mfrow = c(2, 2))
+#A rectangular selection from (10,30) to (150,100)
+imsub(Building2, x %inr% c(30, 150), y %inr% c(10, 100)) %>% 
+  plot(main = 'Rectangular Selection')
+
+px = (Xc(Building2) %inr% c(30, 150)) & (Yc(Building2) %inr% c(10, 100))
+plot(Building2, main = 'Pixset of Rectangular Selection')
+highlight(px)
+
+plot(Building2, main = 'Circular Selection')
+px = (Xc(Building2) - 200)^2 + (Yc(Building2) - 350)^2 < 150^2
+highlight(px)
+
+plot(Building2, main = 'Fuzzy Selection')
+px.flood(Building2, 100, 100, sigma = 0.1) %>% highlight
+#Higher tolerance
+px.flood(Building2, 100, 100, sigma = 0.14) %>% highlight(col="darkred")
+#Different initial point
+px.flood(Building2, 300, 100, sigma = 0.1) %>% highlight(col="blue")
 ```
 
 ### Blurry & Sharpen
@@ -445,10 +609,14 @@ par(mfrow = c(1, 2))
 
 im.g = grayscale(Flower1)
 f = ecdf(im.g)
-f(im.g)  %>% as.cimg(dim = dim(im.g)) %>% plot(main = 'With Histogram Equalisation')
+f(im.g)  %>% 
+  as.cimg(dim = dim(im.g)) %>% 
+  plot(main = 'With Histogram Equalisation')
 
 f = ecdf(Flower2)
-f(Flower2)  %>% as.cimg(dim = dim(Flower2)) %>% plot(main = 'With Histogram Equalisation')
+f(Flower2)  %>% 
+  as.cimg(dim = dim(Flower2)) %>% 
+  plot(main = 'With Histogram Equalisation')
 ```
 
 ```{r}
@@ -456,10 +624,14 @@ par(mfrow = c(1, 2))
 
 im.g = grayscale(Scenery1)
 f = ecdf(im.g)
-f(im.g)  %>% as.cimg(dim = dim(im.g)) %>% plot(main = 'With Histogram Equalisation')
+f(im.g)  %>% 
+  as.cimg(dim = dim(im.g)) %>% 
+  plot(main = 'With Histogram Equalisation')
 
 f = ecdf(Scenery2)
-f(Scenery2)  %>% as.cimg(dim = dim(Scenery2)) %>% plot(main = 'With Histogram Equalisation')
+f(Scenery2)  %>% 
+  as.cimg(dim = dim(Scenery2)) %>% 
+  plot(main = 'With Histogram Equalisation')
 ```
 
 ```{r}
@@ -467,10 +639,14 @@ par(mfrow = c(1, 2))
 
 im.g = grayscale(Person1)
 f = ecdf(im.g)
-f(im.g)  %>% as.cimg(dim = dim(im.g)) %>% plot(main = 'With Histogram Equalisation')
+f(im.g)  %>% 
+  as.cimg(dim = dim(im.g)) %>% 
+  plot(main = 'With Histogram Equalisation')
 
 f = ecdf(Person2)
-f(Person2)  %>% as.cimg(dim = dim(Person2)) %>% plot(main = 'With Histogram Equalisation')
+f(Person2)  %>% 
+  as.cimg(dim = dim(Person2)) %>% 
+  plot(main = 'With Histogram Equalisation')
 ```
 
 ```{r}
@@ -478,10 +654,14 @@ par(mfrow = c(1, 2))
 
 im.g = grayscale(Building1)
 f = ecdf(im.g)
-f(im.g)  %>% as.cimg(dim = dim(im.g)) %>% plot(main = 'With Histogram Equalisation')
+f(im.g)  %>% 
+  as.cimg(dim = dim(im.g)) %>% 
+  plot(main = 'With Histogram Equalisation')
 
 f = ecdf(Scenery2)
-f(Building2)  %>% as.cimg(dim = dim(Building2)) %>% plot(main = 'With Histogram Equalisation')
+f(Building2)  %>% 
+  as.cimg(dim = dim(Building2)) %>% 
+  plot(main = 'With Histogram Equalisation')
 ```
 
 ### Morphological Operations
@@ -656,7 +836,7 @@ plot(im.close, main = "Closing")
 par(mfrow = c(2, 2))
 
 # the brightest 30% of pixels set to white (1) while the remaining 70% are set to black (0)
-im.bin <- threshold(Bulding2, "30%")
+im.bin <- threshold(Building2, "30%")
 
 # Erosion
 im.eroded <- erode_square(im.bin, size = 3)

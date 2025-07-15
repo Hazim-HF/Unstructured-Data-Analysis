@@ -19,8 +19,18 @@ library(tuneR)
 ```{r}
 # upload data of a lion roar
 lion = readMP3('Data/lion_roar.mp3')
-plot(lion)
+plot(lion, main = "Waveform Plot of Lion's Roar", xlab = "Time (seconds)")
+```
+
+```{r}
 str(lion)
+```
+
+```{r}
+timer(lion, f=lion@samp.rate, 
+      threshold=50, 
+      msmooth=c(4000,0), 
+      main = 'Timer Plot of Lion Roar')
 ```
 
 ```{r}
@@ -35,27 +45,11 @@ plot.frequency.spectrum = function(X.k, xlimits = c(0, length(X.k))) {
        xlab = "Frequency (Hz)", ylab = "Strength",
        xlim = xlimits, ylim = c(0,max(Mod(plot.data[,2]))))
 }
-```
 
-```{r}
-plot(lion, main = "Waveform Plot of Lion's Roar", xlab = "Time (seconds)")
-```
-
-```{r}
-timer(lion, f=lion@samp.rate, 
-      threshold=50, 
-      msmooth=c(4000,0), 
-      main = 'Timer Plot of Lion Roar')
-```
-
-This plot visualized the apli
-
-```{r}
 lion_r = fft(lion@left)  
+
 plot.frequency.spectrum(lion_r)
 ```
-
-The frequency spectrum plot above is generated from FFT of the left audio channel. The horizontal axis represent the range of frequencies in the signal while the vertical axis represent the strength of each frequency.
 
 ```{r}
 spectro(lion, main = "Spectrogram of Lion Roar")
@@ -66,11 +60,11 @@ spectro(lion, main = "Spectrogram of Lion Roar")
 ```{r}
 # upload data of a crying man
 cry = readMP3('Data/crying_man.mp3')
-str(cry)
+plot(cry, main = "Waveform Plot of Man's Crying", xlab = "Time (seconds)")
 ```
 
 ```{r}
-plot(cry, main = "Waveform Plot of Man's Crying", xlab = "Time (seconds)")
+str(cry)
 ```
 
 ```{r}
@@ -95,6 +89,7 @@ plot.frequency.spectrum = function(X.k, xlimits = c(0, length(X.k))) {
 }
 
 cry_m = fft(cry@left)
+
 plot.frequency.spectrum(cry_m)
 ```
 
