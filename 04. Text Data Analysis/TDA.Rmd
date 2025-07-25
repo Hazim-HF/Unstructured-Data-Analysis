@@ -48,9 +48,9 @@ The output you're showing is the result of using **Latent Dirichlet Allocation (
 
 Each row corresponds to a term-topic pair and the estimated probability (`beta`) that the term belongs to that topic. For example:
 
--    The word `"aaron"` appears in **both topics**, but with different probabilities (`1.686917e-12` in topic 1 vs `3.895941e-05` in topic 2). It is more associated with topic 2.
+-   The word `"aaron"` appears in **both topics**, but with different probabilities (`1.686917e-12` in topic 1 vs `3.895941e-05` in topic 2). It is more associated with topic 2.
 
--    `"abandon"` and its variants are distributed between both topics as well. `"abandoned"` has a higher beta value in topic 1 compared to topic 2, so it's more representative of topic 1.
+-   `"abandon"` and its variants are distributed between both topics as well. `"abandoned"` has a higher beta value in topic 1 compared to topic 2, so it's more representative of topic 1.
 
 ### **Why Multiple Rows per Word?**
 
@@ -58,8 +58,9 @@ Because `tidy(lda, matrix = "beta")` returns the distribution of every word **ac
 
 ```{r}
 library(tidyverse)
-top_term = topics %>% group_by(topic)
-top_term
+top_term = topics %>% group_by(topic) %>% top_n(10, beta) %>% arrange(topic, -beta)
+
+top_term %>% mutate(term)
 ```
 
 # Text Cluster Analysis

@@ -87,7 +87,7 @@ imshift(parrots,40,20) %>% plot(main="Shifting") #Shift
 imshift(parrots,100,100,boundary=2) %>% plot(main="Shifting (circular)") #Shift circular
 ```
 
-## 1.4 Histogram Equalisations
+## 1.4 Histogram Equalizations
 
 ```{r}
 #Histogram equalisations
@@ -120,6 +120,66 @@ f(boats.g) %>%
   as.cimg(dim = dim(boats.g)) %>% 
   plot(main = "With histogram equalisation")
 ```
+
+### 🔢 **Step-by-step Manual Histogram Equalization**
+
+Let's say the grayscale image has intensity values ranging from 0 to 7 (i.e., 3-bit image, L = 8). These are the steps described in the file:
+
+#### **Step 1: Compute the Frequency Table (Histogram)**
+
+Count how many pixels have each intensity value:
+
+| Gray Level (i) | Frequency (f(i)) |
+|----------------|------------------|
+| 0              | 4                |
+| 1              | 8                |
+| 2              | 10               |
+| ...            | ...              |
+
+#### **Step 2: Compute PDF (Probability Distribution Function)**
+
+PDF is calculated by dividing the frequency by the total number of pixels (N):
+
+PDF(i)=f(i)N\\text{PDF}(i) = \\frac{f(i)}{N}
+
+#### **Step 3: Compute CDF (Cumulative Distribution Function)**
+
+The CDF is computed as:
+
+CDF(i)=∑j=0iPDF(j)\\text{CDF}(i) = \\sum\_{j=0}\^{i} \\text{PDF}(j)
+
+#### **Step 4: Multiply CDF by (L-1) and Round Off**
+
+L is the number of gray levels (usually 256 for 8-bit, so L - 1 = 255).
+
+New Intensity(i)=round[(L−1)×CDF(i)]\\text{New Intensity}(i) = \\text{round}[(L - 1) \\times \\text{CDF}(i)]
+
+#### **Step 5: Replace Old Pixel Values**
+
+For each pixel in the image, replace the original intensity with the newly computed one from Step 4.
+
+### 📌 **Example**
+
+Assume L = 8 and total pixels N = 25. Gray levels range from 0 to 7.
+
+| Gray Level | Frequency (f) | PDF = f/N | CDF  | New Value = round(CDF × 7) |
+|------------|---------------|-----------|------|----------------------------|
+| 0          | 2             | 0.08      | 0.08 | 1                          |
+| 1          | 3             | 0.12      | 0.20 | 1                          |
+| 2          | 4             | 0.16      | 0.36 | 3                          |
+| 3          | 3             | 0.12      | 0.48 | 3                          |
+| 4          | 5             | 0.20      | 0.68 | 5                          |
+| 5          | 2             | 0.08      | 0.76 | 5                          |
+| 6          | 3             | 0.12      | 0.88 | 6                          |
+| 7          | 3             | 0.12      | 1.00 | 7                          |
+
+### 📈 Plotting
+
+-    **Original Histogram**: bar plot of original intensity values
+
+-    **Equalized Histogram**: bar plot of new intensity values
+
+-   Would you like an R script to apply this manually to an actual image?
 
 ## 1.5 Morphological Operations
 
